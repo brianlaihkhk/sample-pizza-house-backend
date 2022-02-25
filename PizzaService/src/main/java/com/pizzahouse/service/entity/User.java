@@ -1,4 +1,6 @@
-package com.pizzahouse.common.entity;
+package com.pizzahouse.service.entity;
+
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +18,9 @@ import com.pizzahouse.common.entity.Session;
 
 @Entity
 @Table(name="USER")
-public class User {
+public class User implements Serializable {
+
+	private static final long serialVersionUID = -6346884675078353970L;
 
 	public User (String username, String firstName, String lastName, String password) {
 		setUsername(username);

@@ -7,15 +7,18 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.persistence.criteria.Predicate;
+
 import org.apache.commons.codec.binary.Hex;
 
-import com.pizzahouse.common.database.DatabaseTransaction;
+import com.pizzahouse.common.database.DatabaseQuery;
 import com.pizzahouse.common.entity.Session;
 import com.pizzahouse.common.entity.User;
-import com.pizzhouse.common.exception.UnauthorizedException;
+import com.pizzahouse.common.exception.UnauthorizedException;
 
 public class SecurityService {
-	DatabaseTransaction<User> dbTransaction = new DatabaseTransaction<User>();
+	DatabaseQuery<User> userQuery = new DatabaseQuery<User>();
 
 	public boolean checkUserTokenByUsername (String username, String token) throws UnauthorizedException {
 		long epochValidTime = (System.currentTimeMillis() / 1000) - 30 * 24 * 3600;
@@ -23,8 +26,12 @@ public class SecurityService {
 		Map<String, Object> queryList = new HashMap<String, Object>();
 		queryList.put("username", username);
 		
-		List<User> result = dbTransaction.selectByParameter("findUserByUsername", queryList);
-				
+//		List<User> result = dbTransaction.selectByParameter("findUserByUsername", queryList);
+
+		Predicate[] predicates = new Predicate[1];
+		predicates[0] = userQuery.getCriteriaBuilder().equal(userQuery.getRoot(User.class).get("username"), username);
+		List<User> result = userQuery.selectByCriteria(User.class, predicates);
+		
 		if (result.size() == 1 && result.get(0).getSession() != null && result.get(0).getSession().getToken() == token && result.get(0).getSession().getCreationEpochTime() > epochValidTime) {
 			return true;
 		} else if (result.get(0).getSession().getCreationEpochTime() < epochValidTime) {
@@ -38,7 +45,7 @@ public class SecurityService {
 		long epochValidTime = (System.currentTimeMillis() / 1000) - 30 * 24 * 3600;	
 		
 		User user = new User();
-		user = dbTransaction.select(user, userId);
+		user = userQuery.select(User.class, userId);
 				
 		if (user.getSession() != null && user.getSession().getToken() == token && user.getSession().getCreationEpochTime() > epochValidTime) {
 			return true;
