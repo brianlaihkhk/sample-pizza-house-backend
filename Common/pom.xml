@@ -2,21 +2,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.pizzahouse</groupId>
-  <artifactId>Proxy</artifactId>
-  <packaging>war</packaging>
+  <artifactId>Common</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>Proxy Maven Webapp</name>
+  <name>Archetype - Common</name>
   <url>http://maven.apache.org</url>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.3.RELEASE</version>
-    </parent>
+ 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
+
 		<dependency>
 			<groupId>org.hibernate.common</groupId>
 			<artifactId>hibernate-commons-annotations</artifactId>
@@ -33,8 +25,19 @@
 	      <artifactId>hibernate-core</artifactId>
 	      <version>5.6.5.Final</version>
 	    </dependency>
+        <dependency>
+      		<groupId>junit</groupId>
+      		<artifactId>junit</artifactId>
+      		<version>4.12</version>
+      		<scope>test</scope>
+    	</dependency>
+		<dependency>
+		    <groupId>commons-codec</groupId>
+		    <artifactId>commons-codec</artifactId>
+		    <version>1.15</version>
+		</dependency>
   	</dependencies>
   <build>
-    <finalName>Proxy</finalName>
+    <finalName>Domain</finalName>
   </build>
 </project>
