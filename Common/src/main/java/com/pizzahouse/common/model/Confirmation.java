@@ -2,11 +2,11 @@ package com.pizzahouse.common.model;
 
 import java.util.List;
 
-public class OrderConfirmation {
+public class Confirmation {
 
 	private int userId;
 	private float totalAmount;
-	private List<OrderConfirmationDetail> details;
+	private List<ConfirmationDetail> details;
 	
 	public int getUserId() {
 		return userId;
@@ -20,10 +20,10 @@ public class OrderConfirmation {
 	public void setTotalAmount(float totalAmount) {
 		this.totalAmount = totalAmount;
 	}
-	public List<OrderConfirmationDetail> getDetails() {
+	public List<ConfirmationDetail> getDetails() {
 		return details;
 	}
-	public void setDetails(List<OrderConfirmationDetail> details) {
+	public void setDetails(List<ConfirmationDetail> details) {
 		this.details = details;
 	}
 	

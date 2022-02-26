@@ -16,13 +16,8 @@ public class UserHelper {
 	 * @param session Session token of the user
 	 * @return OrderDetail object
 	 */
- 	public static User createUser(int userId, String username, String firstName, String lastName, String password, Session session){
- 		User user = new User();
- 		user.setId(userId);
- 		user.setUsername(username);
- 		user.setFirstName(firstName);
- 		user.setLastName(lastName);
- 		user.setPassword(password);
+ 	public static User createUser(String username, String firstName, String lastName, String password, Session session){
+ 		User user = new User(username, firstName, lastName, password);
  		user.setSession(session);
  		
  		return user;

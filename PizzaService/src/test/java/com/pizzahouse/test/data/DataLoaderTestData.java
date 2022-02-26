@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.pizzahouse.service.entity.PizzaSize;
-import com.pizzahouse.service.entity.PizzaSizeFlatten;
+import com.pizzahouse.service.entity.FlattenPizzaSize;
 import com.pizzahouse.service.entity.PizzaTopping;
-import com.pizzahouse.service.entity.PizzaToppingFlatten;
+import com.pizzahouse.service.entity.FlattenPizzaTopping;
 import com.pizzahouse.service.entity.PizzaType;
 import com.pizzahouse.test.helper.PizzaHelper;
 
@@ -31,8 +31,8 @@ public class DataLoaderTestData {
 	/**
 	 * Generate PizzaSizeMap Test Data Set 1
 	 */
- 	public static Map<String, PizzaSizeFlatten> generatePizzaSizeMapSet1(){
- 		Map<String, PizzaSizeFlatten> map = new HashMap<String, PizzaSizeFlatten>();
+ 	public static Map<String, FlattenPizzaSize> generatePizzaSizeMapSet1(){
+ 		Map<String, FlattenPizzaSize> map = new HashMap<String, FlattenPizzaSize>();
  		map.put("1,1", PizzaHelper.createPizzaSizeFlatten(neapolitanPizza, roundRegularSize));
  		map.put("1,2", PizzaHelper.createPizzaSizeFlatten(neapolitanPizza, roundLargeSize));
  		map.put("1,4", PizzaHelper.createPizzaSizeFlatten(neapolitanPizza, SquareLargeSize));
@@ -50,8 +50,8 @@ public class DataLoaderTestData {
 	/**
 	 * Generate PizzaToppingMap Test Data Set 1
 	 */
- 	public static Map<String, PizzaToppingFlatten> generatePizzaToppingMapSet1(){
- 		Map<String, PizzaToppingFlatten> map = new HashMap<String, PizzaToppingFlatten>();
+ 	public static Map<String, FlattenPizzaTopping> generatePizzaToppingMapSet1(){
+ 		Map<String, FlattenPizzaTopping> map = new HashMap<String, FlattenPizzaTopping>();
  		map.put("1,1", PizzaHelper.createPizzaToppingFlatten(neapolitanPizza, chickenTopping));
  		map.put("1,2", PizzaHelper.createPizzaToppingFlatten(neapolitanPizza, eggTopping));
  		map.put("1,3", PizzaHelper.createPizzaToppingFlatten(neapolitanPizza, goatCheeseTopping));

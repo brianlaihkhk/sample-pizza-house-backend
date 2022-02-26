@@ -26,14 +26,14 @@ public class SecurityService {
 	 * @param token Token input to validate
 	 * @return True if user token is verified and not expired, otherwise throw Exception
 	 */
-	public boolean checkUserTokenByUsername (String username, String token) throws UnauthorizedException {
-		long epochValidTime = (System.currentTimeMillis() / 1000) - 30 * 24 * 3600;
+	public boolean checkUserTokenByUsername (String username, String sessionToken, long expirationDay) throws UnauthorizedException {
+		long epochValidTime = (System.currentTimeMillis() / 1000) - expirationDay * 24 * 3600;
 
 		Predicate[] predicates = new Predicate[1];
 		predicates[0] = userQuery.getCriteriaBuilder().equal(userQuery.getRoot(User.class).get("username"), username);
 		List<User> result = userQuery.selectByCriteria(User.class, predicates);
 		
-		if (result.size() == 1 && result.get(0).getSession() != null && result.get(0).getSession().getToken() == token && result.get(0).getSession().getCreationEpochTime() > epochValidTime) {
+		if (result.size() == 1 && result.get(0).getSession() != null && result.get(0).getSession().getToken() == sessionToken && result.get(0).getSession().getCreationEpochTime() > epochValidTime) {
 			return true;
 		} else if (result.get(0).getSession().getCreationEpochTime() < epochValidTime) {
 			throw new UnauthorizedException("Token expired, unauthorized action");
@@ -47,13 +47,13 @@ public class SecurityService {
 	 * @param token Token input to validate
 	 * @return True if user token is verified and not expired, otherwise throw Exception
 	 */
-	public boolean checkUserTokenByUserId (int userId, String token) throws UnauthorizedException {
-		long epochValidTime = (System.currentTimeMillis() / 1000) - 30 * 24 * 3600;	
+	public boolean checkUserTokenByUserId (int userId, String sessionToken, long expirationDay) throws UnauthorizedException {
+		long epochValidTime = (System.currentTimeMillis() / 1000) - expirationDay * 24 * 3600;	
 		
 		User user = new User();
 		user = userQuery.select(User.class, userId);
 				
-		if (user.getSession() != null && user.getSession().getToken() == token && user.getSession().getCreationEpochTime() > epochValidTime) {
+		if (user.getSession() != null && user.getSession().getToken() == sessionToken && user.getSession().getCreationEpochTime() > epochValidTime) {
 			return true;
 		}  else if (user.getSession().getCreationEpochTime() < epochValidTime) {
 			throw new UnauthorizedException("Token expired, unauthorized action");

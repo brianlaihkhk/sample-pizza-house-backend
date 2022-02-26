@@ -1,9 +1,9 @@
 package com.pizzahouse.test.helper;
 
 import com.pizzahouse.service.entity.PizzaSize;
-import com.pizzahouse.service.entity.PizzaSizeFlatten;
+import com.pizzahouse.service.entity.FlattenPizzaSize;
 import com.pizzahouse.service.entity.PizzaTopping;
-import com.pizzahouse.service.entity.PizzaToppingFlatten;
+import com.pizzahouse.service.entity.FlattenPizzaTopping;
 import com.pizzahouse.service.entity.PizzaType;
 
 public class PizzaHelper {
@@ -14,8 +14,8 @@ public class PizzaHelper {
 	 * @param pizzaSize Pizza size
 	 * @return PizzaSizeFlatten object
 	 */
- 	public static PizzaSizeFlatten createPizzaSizeFlatten(PizzaType pizzaType, PizzaSize pizzaSize){
- 		PizzaSizeFlatten pizzaSizeFlatten = new PizzaSizeFlatten();
+ 	public static FlattenPizzaSize createPizzaSizeFlatten(PizzaType pizzaType, PizzaSize pizzaSize){
+ 		FlattenPizzaSize pizzaSizeFlatten = new FlattenPizzaSize();
  		pizzaSizeFlatten.setPizzaSize(pizzaSize);
  		pizzaSizeFlatten.setPizzaType(pizzaType);
  		pizzaSizeFlatten.setPizzaSizeId(pizzaSize.getId());
@@ -29,8 +29,8 @@ public class PizzaHelper {
 	 * @param pizzaSize Pizza size
 	 * @return PizzaSizeFlatten object
 	 */
- 	public static PizzaToppingFlatten createPizzaToppingFlatten(PizzaType pizzaType, PizzaTopping pizzaTopping){
- 		PizzaToppingFlatten pizzaToppingFlatten = new PizzaToppingFlatten();
+ 	public static FlattenPizzaTopping createPizzaToppingFlatten(PizzaType pizzaType, PizzaTopping pizzaTopping){
+ 		FlattenPizzaTopping pizzaToppingFlatten = new FlattenPizzaTopping();
  		pizzaToppingFlatten.setPizzaTopping(pizzaTopping);
  		pizzaToppingFlatten.setPizzaType(pizzaType);
  		pizzaToppingFlatten.setPizzaToppingId(pizzaTopping.getId());

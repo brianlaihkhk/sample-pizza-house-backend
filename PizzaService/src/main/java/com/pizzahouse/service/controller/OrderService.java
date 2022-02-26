@@ -3,14 +3,17 @@ package com.pizzahouse.service.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pizzahouse.service.entity.PizzaSizeFlatten;
-import com.pizzahouse.service.entity.PizzaToppingFlatten;
+import com.pizzahouse.service.entity.FlattenPizzaSize;
+import com.pizzahouse.service.entity.FlattenPizzaTopping;
 import com.pizzahouse.service.initialization.DataLoader;
-import com.pizzahouse.common.model.OrderConfirmation;
-import com.pizzahouse.common.model.OrderConfirmationDetail;
+import com.pizzahouse.common.model.Confirmation;
+import com.pizzahouse.common.model.ConfirmationDetail;
 import com.pizzahouse.service.model.Order;
 import com.pizzahouse.service.model.OrderDetail;
 import com.pizzahouse.common.model.Response;
+import com.pizzahouse.common.config.Connection;
+import com.pizzahouse.common.config.Default;
+import com.pizzahouse.common.connection.ConnectionHelper;
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 
@@ -22,12 +25,12 @@ public class OrderService {
 	 * @param order The order supplied by the user, containing the ordered item from front end.
 	 * @return Success with order complete / fail with error message 
 	 */
-	public Response<String> submitOrder (int id, Order order) throws UnauthorizedException, OrderFullfillmentException {
-		Response<String> response = new Response<String>();
+	public Response submitOrder (int userId, Order order) throws UnauthorizedException, OrderFullfillmentException {
+	
+		Confirmation confirmation = finalizeOrder(order);
+		confirmation.setUserId(userId);
 		
-		OrderConfirmation orderConfirmation = finalizeOrder(order);
-		
-		
+		Response response = (new ConnectionHelper<Response>()).post(Connection.orderConfirmationServiceHost, confirmation, Response.class);
 		
 		return response;
 	}
@@ -38,10 +41,10 @@ public class OrderService {
 	 * @param order The order supplied by the user, containing the ordered item from front end.
 	 * @return Finalized confirmation object which is ready to persist in DB. The object containing the sub-total of each item, grand total of the order, and the item details of each order
 	 */
-	public OrderConfirmation finalizeOrder (Order order) throws UnauthorizedException, OrderFullfillmentException {
+	public Confirmation finalizeOrder (Order order) throws UnauthorizedException, OrderFullfillmentException {
 
-		OrderConfirmation orderConfirmation = new OrderConfirmation();
-		List<OrderConfirmationDetail> orderConfirmationDetail = new ArrayList<OrderConfirmationDetail>();
+		Confirmation confirmation = new Confirmation();
+		List<ConfirmationDetail> details = new ArrayList<ConfirmationDetail>();
 	
 		float totalAmount = 0.0f;
 		
@@ -52,18 +55,18 @@ public class OrderService {
 		for(OrderDetail orderDetail : order.getDetails()) {
 			String sizeKey = orderDetail.getPizzaTypeId() + "," + orderDetail.getPizzaSizeId();
 			if (DataLoader.pizzaSizeMap.containsKey(sizeKey)) {
-				PizzaSizeFlatten pizzaSizeFlatten = DataLoader.pizzaSizeMap.get(sizeKey);
+				FlattenPizzaSize pizzaSizeFlatten = DataLoader.pizzaSizeMap.get(sizeKey);
 				float subTotal = orderDetail.getQuantity() * pizzaSizeFlatten.getPizzaSize().getPrice();
 				
-				OrderConfirmationDetail orderConfirmationItem = new OrderConfirmationDetail();
-				orderConfirmationItem.setPizzaTypeId(pizzaSizeFlatten.getPizzaTypeId());
-				orderConfirmationItem.setSubItemCategoryId(1);
-				orderConfirmationItem.setSubItemId(pizzaSizeFlatten.getPizzaSizeId());
-				orderConfirmationItem.setQuantity(orderDetail.getQuantity());
-				orderConfirmationItem.setSinglePrice(pizzaSizeFlatten.getPizzaSize().getPrice());
-				orderConfirmationItem.setSubTotal(subTotal);
+				ConfirmationDetail confirmationDetail = new ConfirmationDetail();
+				confirmationDetail.setPizzaTypeId(pizzaSizeFlatten.getPizzaTypeId());
+				confirmationDetail.setSubItemCategoryId(Default.subItemCategoryIdPizzaSize);
+				confirmationDetail.setSubItemReferenceId(pizzaSizeFlatten.getPizzaSizeId());
+				confirmationDetail.setQuantity(orderDetail.getQuantity());
+				confirmationDetail.setSinglePrice(pizzaSizeFlatten.getPizzaSize().getPrice());
+				confirmationDetail.setSubTotal(subTotal);
 				
-				orderConfirmationDetail.add(orderConfirmationItem);
+				details.add(confirmationDetail);
 				totalAmount += subTotal;
 			} else {
 				throw new OrderFullfillmentException("The order request contains unsupported pizza size");
@@ -73,18 +76,18 @@ public class OrderService {
 				String toppingKey = orderDetail.getPizzaTypeId() + "," + toppingId;
 
 				if (DataLoader.pizzaToppingMap.containsKey(toppingKey)) {
-					PizzaToppingFlatten pizzaToppingFlatten = DataLoader.pizzaToppingMap.get(toppingKey);
+					FlattenPizzaTopping pizzaToppingFlatten = DataLoader.pizzaToppingMap.get(toppingKey);
 					float subTotal = orderDetail.getQuantity() * pizzaToppingFlatten.getPizzaTopping().getPrice();
 					
-					OrderConfirmationDetail orderConfirmationItem = new OrderConfirmationDetail();
-					orderConfirmationItem.setPizzaTypeId(pizzaToppingFlatten.getPizzaTypeId());
-					orderConfirmationItem.setSubItemCategoryId(2);
-					orderConfirmationItem.setSubItemId(pizzaToppingFlatten.getPizzaToppingId());
-					orderConfirmationItem.setQuantity(orderDetail.getQuantity());
-					orderConfirmationItem.setSinglePrice(pizzaToppingFlatten.getPizzaTopping().getPrice());
-					orderConfirmationItem.setSubTotal(subTotal);
+					ConfirmationDetail confirmationDetail = new ConfirmationDetail();
+					confirmationDetail.setPizzaTypeId(pizzaToppingFlatten.getPizzaTypeId());
+					confirmationDetail.setSubItemCategoryId(Default.subItemCategoryIdPizzaTopping);
+					confirmationDetail.setSubItemReferenceId(pizzaToppingFlatten.getPizzaToppingId());
+					confirmationDetail.setQuantity(orderDetail.getQuantity());
+					confirmationDetail.setSinglePrice(pizzaToppingFlatten.getPizzaTopping().getPrice());
+					confirmationDetail.setSubTotal(subTotal);
 					
-					orderConfirmationDetail.add(orderConfirmationItem);
+					details.add(confirmationDetail);
 					totalAmount += subTotal;
 				} else {
 					throw new OrderFullfillmentException("The order request contains unsupported pizza topping");
@@ -92,10 +95,10 @@ public class OrderService {
 			}
 		}
 		
-		orderConfirmation.setTotalAmount(totalAmount);
-		orderConfirmation.setDetails(orderConfirmationDetail);
+		confirmation.setTotalAmount(totalAmount);
+		confirmation.setDetails(details);
 
 		
-		return orderConfirmation;
+		return confirmation;
 	}
 }

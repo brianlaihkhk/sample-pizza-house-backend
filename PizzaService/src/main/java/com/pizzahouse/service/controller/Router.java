@@ -12,6 +12,8 @@ import com.pizzahouse.common.security.SecurityService;
 import com.pizzahouse.common.model.ErrorDetail;
 import com.pizzahouse.service.model.Order;
 import com.pizzahouse.common.model.Response;
+import com.pizzahouse.common.config.Default;
+import com.pizzahouse.common.config.ErrorCode;
 import com.pizzahouse.common.entity.Session;
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.exception.UnauthorizedException;
@@ -36,15 +38,15 @@ public class Router {
 		ErrorDetail error = new ErrorDetail();
 		
 		try {
-			response = userService.getSessionByUsername(username, password);
+			response = userService.userLogin(username, password);
 		} catch(RollbackException e) {
-			error.setErrorCode(4060);
+			error.setErrorCode(ErrorCode.rollbackException);
 			error.setErrorMessage("Database error, transaction has been rejected and rolled back");
 			
 			response.setSuccess(false);
 			response.setError(error);
 		} catch(Exception e) {
-			error.setErrorCode(5001);
+			error.setErrorCode(ErrorCode.baseException);
 			error.setErrorMessage("Unknown error occured, please try again later");
 			
 			response.setSuccess(false);
@@ -69,25 +71,25 @@ public class Router {
 		try {
 			response = userService.createUser(username, firstName, lastName, password);
 		} catch(RollbackException e) {
-			error.setErrorCode(4060);
+			error.setErrorCode(ErrorCode.rollbackException);
 			error.setErrorMessage("Database error, transaction has been rejected and rolled back");
 			
 			response.setSuccess(false);
 			response.setError(error);
 		} catch(UserProfileException e) {
-			error.setErrorCode(4500);
+			error.setErrorCode(ErrorCode.userProfileException);
 			error.setErrorMessage(e.getMessage());
 			
 			response.setSuccess(false);
 			response.setError(error);
 		} catch(NoSuchAlgorithmException e) {
-			error.setErrorCode(4060);
+			error.setErrorCode(ErrorCode.noSuchAlgorithmException);
 			error.setErrorMessage("Database error, transaction has been rejected and rolled back");
 			
 			response.setSuccess(false);
 			response.setError(error);
 		} catch(Exception e) {
-			error.setErrorCode(5001);
+			error.setErrorCode(ErrorCode.baseException);
 			error.setErrorMessage("Unknown error occured, please try again later");
 			
 			response.setSuccess(false);
@@ -106,33 +108,33 @@ public class Router {
 	 */
 	@RequestMapping(value = "/order", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Response<String> submitOrder (int id, String token, Order order) {
+	public Response<String> submitOrder (int userId, String sessionToken, Order order) {
 		Response<String> response = new Response<String>();
 		ErrorDetail error = new ErrorDetail();
 		
 		try {
-			securityService.checkUserTokenByUserId(id, token);
-			response = orderService.submitOrder(id, order);
+			securityService.checkUserTokenByUserId(userId, sessionToken, Default.sessionTokenExpirationDays);
+			response = orderService.submitOrder(userId, order);
 		} catch(RollbackException e) {
-			error.setErrorCode(4060);
+			error.setErrorCode(ErrorCode.rollbackException);
 			error.setErrorMessage("Database error, transaction has been rejected and rolled back");
 			
 			response.setSuccess(false);
 			response.setError(error);
 		} catch(UnauthorizedException e) {
-			error.setErrorCode(4011);
+			error.setErrorCode(ErrorCode.unauthorizedException);
 			error.setErrorMessage(e.getMessage());
 			
 			response.setSuccess(false);
 			response.setError(error);
 		} catch(OrderFullfillmentException e) {
-			error.setErrorCode(4400);
+			error.setErrorCode(ErrorCode.orderFullfillmentException);
 			error.setErrorMessage(e.getMessage());
 			
 			response.setSuccess(false);
 			response.setError(error);
 		} catch(Exception e) {
-			error.setErrorCode(5001);
+			error.setErrorCode(ErrorCode.baseException);
 			error.setErrorMessage("Unknown error occured, please try again later");
 			
 			response.setSuccess(false);

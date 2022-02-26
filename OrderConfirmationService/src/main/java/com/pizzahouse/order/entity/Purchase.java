@@ -27,7 +27,7 @@ public class Purchase {
 
     @OneToMany
     @JoinColumn(name = "USER_ID")
-	private User userId;
+	private int userId;
 
     @Column(name="TOTAL_AMOUNT", scale=2, nullable=false)
 	private float totalAmount;
@@ -50,11 +50,11 @@ public class Purchase {
 		this.id = id;
 	}
 
-	public User getUserId() {
+	public int getUserId() {
 		return userId;
 	}
 
-	public void setUserId(User userId) {
+	public void setUserId(int userId) {
 		this.userId = userId;
 	}
 

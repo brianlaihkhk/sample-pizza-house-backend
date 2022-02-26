@@ -2,10 +2,10 @@ package com.pizzahouse.common.model;
 
 import java.util.List;
 
-public class OrderConfirmationDetail {
+public class ConfirmationDetail {
 	
 	private int pizzaTypeId;
-	private int subItemId;
+	private int subItemReferenceId;
 	private int subItemCategoryId;
 	private int quantity;
 	private float singlePrice;
@@ -16,11 +16,11 @@ public class OrderConfirmationDetail {
 	public void setPizzaTypeId(int pizzaTypeId) {
 		this.pizzaTypeId = pizzaTypeId;
 	}
-	public int getSubItemId() {
-		return subItemId;
+	public int getSubItemReferenceId() {
+		return subItemReferenceId;
 	}
-	public void setSubItemId(int subItemId) {
-		this.subItemId = subItemId;
+	public void setSubItemReferenceId(int subItemReferenceId) {
+		this.subItemReferenceId = subItemReferenceId;
 	}
 	public int getSubItemCategoryId() {
 		return subItemCategoryId;

@@ -23,7 +23,7 @@ public class UserService {
 	 * @param password Password input from user during login (SHA256 salt)
 	 * @return Success with session token / fail with error message
 	 */
-	public Response<Session> getSessionByUsername (String username, String password) throws UnauthorizedException {
+	public Response<Session> userLogin (String username, String password) throws UnauthorizedException {
 		Response<Session> response = new Response<Session>();
 
 		Predicate[] predicates = new Predicate[1];
@@ -60,7 +60,7 @@ public class UserService {
 			response.setSuccess(true);
 			response.setPayload(userQuery.select(User.class, id).getSession());
 		} else {
-			throw new UserProfileException("Unable to create new user");
+			throw new UserProfileException("Unable to create new user. User may be registered or username may be taken by other users");
 		}
 		
 		return response;

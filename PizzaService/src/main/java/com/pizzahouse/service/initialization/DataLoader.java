@@ -9,26 +9,26 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import com.pizzahouse.common.database.DatabaseQuery;
-import com.pizzahouse.service.entity.PizzaSizeFlatten;
-import com.pizzahouse.service.entity.PizzaToppingFlatten;
+import com.pizzahouse.service.entity.FlattenPizzaSize;
+import com.pizzahouse.service.entity.FlattenPizzaTopping;
 
 @Component
 public class DataLoader implements ApplicationRunner {
- 	public static Map<String, PizzaSizeFlatten> pizzaSizeMap = new HashMap<String, PizzaSizeFlatten>();
- 	public static Map<String, PizzaToppingFlatten> pizzaToppingMap = new HashMap<String, PizzaToppingFlatten>();
+ 	public static Map<String, FlattenPizzaSize> pizzaSizeMap = new HashMap<String, FlattenPizzaSize>();
+ 	public static Map<String, FlattenPizzaTopping> pizzaToppingMap = new HashMap<String, FlattenPizzaTopping>();
 
     public void run(ApplicationArguments args) {
-    	DatabaseQuery<PizzaSizeFlatten> pizzaSizeQuery = new DatabaseQuery<PizzaSizeFlatten>();
-    	DatabaseQuery<PizzaToppingFlatten> pizzaToppingQuery = new DatabaseQuery<PizzaToppingFlatten>();
+    	DatabaseQuery<FlattenPizzaSize> pizzaSizeQuery = new DatabaseQuery<FlattenPizzaSize>();
+    	DatabaseQuery<FlattenPizzaTopping> pizzaToppingQuery = new DatabaseQuery<FlattenPizzaTopping>();
     	
-    	List<PizzaSizeFlatten> pizzaSizeList = pizzaSizeQuery.selectAll(PizzaSizeFlatten.class);
-    	List<PizzaToppingFlatten> pizzaToppingList = pizzaToppingQuery.selectAll(PizzaToppingFlatten.class);
+    	List<FlattenPizzaSize> pizzaSizeList = pizzaSizeQuery.selectAll(FlattenPizzaSize.class);
+    	List<FlattenPizzaTopping> pizzaToppingList = pizzaToppingQuery.selectAll(FlattenPizzaTopping.class);
     	
-		for (PizzaSizeFlatten pizzaSizeItem : pizzaSizeList) {
+		for (FlattenPizzaSize pizzaSizeItem : pizzaSizeList) {
 			pizzaSizeMap.put(pizzaSizeItem.getPizzaTypeId() + "," + pizzaSizeItem.getPizzaSizeId(), pizzaSizeItem);
 		}
 		
-		for (PizzaToppingFlatten pizzaToppingItem : pizzaToppingList) {
+		for (FlattenPizzaTopping pizzaToppingItem : pizzaToppingList) {
 			pizzaToppingMap.put(pizzaToppingItem.getPizzaTypeId() + "," + pizzaToppingItem.getPizzaToppingId(), pizzaToppingItem);
 		}
     }

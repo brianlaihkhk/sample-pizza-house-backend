@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="PIZZA")
-public class PizzaToppingFlatten {
+public class FlattenPizzaTopping {
 
 	@Column(name="PIZZA_TYPE_ID")
 	private int pizzaTypeId;

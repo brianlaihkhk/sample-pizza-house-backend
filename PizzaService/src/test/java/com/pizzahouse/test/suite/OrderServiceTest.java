@@ -10,7 +10,7 @@ import org.junit.runners.MethodSorters;
 
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.exception.UnauthorizedException;
-import com.pizzahouse.common.model.OrderConfirmation;
+import com.pizzahouse.common.model.Confirmation;
 import com.pizzahouse.service.controller.OrderService;
 import com.pizzahouse.service.initialization.DataLoader;
 import com.pizzahouse.service.model.Order;
@@ -82,10 +82,10 @@ public class OrderServiceTest {
     @Test
     public void _03_orderPizzaSet1() throws UnauthorizedException, OrderFullfillmentException {
     	Order order = OrderTestData.generateOrderSet1();
-    	OrderConfirmation orderConfirmation = orderService.finalizeOrder(order);
+    	Confirmation confirmation = orderService.finalizeOrder(order);
 
-    	assertEquals(4, orderConfirmation.getDetails().size());
-       	assertEquals(616f, orderConfirmation.getTotalAmount(), 0.001f);
+    	assertEquals(4, confirmation.getDetails().size());
+       	assertEquals(616f, confirmation.getTotalAmount(), 0.001f);
     }
 
 	/**
@@ -106,17 +106,17 @@ public class OrderServiceTest {
     @Test
     public void _04_orderPizzaSet2() throws UnauthorizedException, OrderFullfillmentException {
     	Order order = OrderTestData.generateOrderSet2();
-    	OrderConfirmation orderConfirmation = orderService.finalizeOrder(order);
+    	Confirmation confirmation = orderService.finalizeOrder(order);
     	
-    	assertEquals(7, orderConfirmation.getDetails().size()); 
-    	assertEquals(551f, orderConfirmation.getTotalAmount(), 0.001f);
+    	assertEquals(7, confirmation.getDetails().size()); 
+    	assertEquals(551f, confirmation.getTotalAmount(), 0.001f);
 
     }
     
 	/**
 	 *    oneSquareRegularChicagoPizzaWithGoatCheese
 	 *   --------------------------------------
-	 *   No order will be processed since Square Regular Chicago Pizza is not on sale
+	 *   No order will be processed since neither Square Regular Chicago Pizza nor Chicago Pizza with Goat Cheese Topping is not on sale
 	 */
     @Test(expected = OrderFullfillmentException.class)
     public void _05_orderPizzaSet3() throws UnauthorizedException, OrderFullfillmentException {

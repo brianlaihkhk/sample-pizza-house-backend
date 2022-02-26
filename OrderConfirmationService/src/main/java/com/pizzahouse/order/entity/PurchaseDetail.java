@@ -12,14 +12,17 @@ import javax.persistence.Table;
 public class PurchaseDetail {
 
 	@Column(name="PURCHASE_ID")
-	private int id;
+	private int purchaseId;
+	
+	@Column(name="PIZZA_TYPE_ID")
+	private int pizzaTypeId;
 
-    @Column(name="ITEM_NAME", nullable=false)
-	private String name;
-
-    @Column(name="ITEM_DESCRIPTION", nullable=false)
-	private String description;
-
+	@Column(name="SUB_ITEM_REFERENCE_ID")
+	private int subItemReferenceId;
+	
+	@Column(name="SUB_ITEM_CATEGORY_ID")
+	private int subItemCategoryId;
+	
     @Column(name="QUANTITY", nullable=false)
 	private int quantity;
 	
@@ -29,28 +32,36 @@ public class PurchaseDetail {
     @Column(name="SUB_TOTAL", scale=2, nullable=false)
 	private float subTotal;
 
-	public int getId() {
-		return id;
+	public int getPurchaseId() {
+		return purchaseId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setPurchaseId(int purchaseId) {
+		this.purchaseId = purchaseId;
 	}
 
-	public String getName() {
-		return name;
+	public int getPizzaTypeId() {
+		return pizzaTypeId;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setPizzaTypeId(int pizzaTypeId) {
+		this.pizzaTypeId = pizzaTypeId;
 	}
 
-	public String getDescription() {
-		return description;
+	public int getSubItemReferenceId() {
+		return subItemReferenceId;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setSubItemReferenceId(int subItemReferenceId) {
+		this.subItemReferenceId = subItemReferenceId;
+	}
+
+	public int getSubItemCategoryId() {
+		return subItemCategoryId;
+	}
+
+	public void setSubItemCategoryId(int subItemCategoryId) {
+		this.subItemCategoryId = subItemCategoryId;
 	}
 
 	public int getQuantity() {
@@ -76,7 +87,5 @@ public class PurchaseDetail {
 	public void setSubTotal(float subTotal) {
 		this.subTotal = subTotal;
 	}
-
-	
 	
 }
