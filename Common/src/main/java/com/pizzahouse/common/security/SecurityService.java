@@ -20,13 +20,14 @@ import com.pizzahouse.common.exception.UnauthorizedException;
 public class SecurityService {
 	DatabaseQuery<User> userQuery = new DatabaseQuery<User>();
 
+	/**
+	 * Validate user token by username 
+	 * @param username Username of the user
+	 * @param token Token input to validate
+	 * @return True if user token is verified and not expired, otherwise throw Exception
+	 */
 	public boolean checkUserTokenByUsername (String username, String token) throws UnauthorizedException {
 		long epochValidTime = (System.currentTimeMillis() / 1000) - 30 * 24 * 3600;
-
-		Map<String, Object> queryList = new HashMap<String, Object>();
-		queryList.put("username", username);
-		
-//		List<User> result = dbTransaction.selectByParameter("findUserByUsername", queryList);
 
 		Predicate[] predicates = new Predicate[1];
 		predicates[0] = userQuery.getCriteriaBuilder().equal(userQuery.getRoot(User.class).get("username"), username);
@@ -40,7 +41,12 @@ public class SecurityService {
 		throw new UnauthorizedException("Token not match, unauthorized action");
 	}
 	
-
+	/**
+	 * Validate user token by userId 
+	 * @param userId User id of the user
+	 * @param token Token input to validate
+	 * @return True if user token is verified and not expired, otherwise throw Exception
+	 */
 	public boolean checkUserTokenByUserId (int userId, String token) throws UnauthorizedException {
 		long epochValidTime = (System.currentTimeMillis() / 1000) - 30 * 24 * 3600;	
 		
@@ -52,9 +58,14 @@ public class SecurityService {
 		}  else if (user.getSession().getCreationEpochTime() < epochValidTime) {
 			throw new UnauthorizedException("Token expired, unauthorized action");
 		}
-		return false;
+		throw new UnauthorizedException("Unmatched token, unauthorized action");
 	}
-	
+
+	/**
+	 * Add session token information to the user object 
+	 * @param user User profile object
+	 * @return User profile object containing session token information
+	 */
 	public User setToken (User user) throws NoSuchAlgorithmException {
 		Long epoch = (System.currentTimeMillis() / 1000);
 		Session session = new Session();
@@ -66,6 +77,12 @@ public class SecurityService {
 		return user;
 	}	
 	
+	
+	/**
+	 * Session token generation 
+	 * @param input Input for generating the session token
+	 * @return Generated string using SHA256
+	 */
 	private String generateToken (String input) throws NoSuchAlgorithmException {
 		MessageDigest digest;
 

@@ -10,9 +10,6 @@ import javax.persistence.Table;
 @Table(name="SESSION")
 public class Session {
 
-    @Column(name="USER_ID", nullable=false)
-	private int id;
-
     @Column(name="SESSION_TOKEN", nullable=false)
 	private String token;
 
@@ -21,14 +18,6 @@ public class Session {
 
 	@Column(name="CREATION_EPOCH_TIME")
 	private long creationEpochTime;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public String getToken() {
 		return token;

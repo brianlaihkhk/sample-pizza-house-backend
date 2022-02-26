@@ -3,5 +3,5 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>PizzaHouse Proxy</display-name>
+  <display-name>PizzaHouse PizzaService</display-name>
 </web-app>

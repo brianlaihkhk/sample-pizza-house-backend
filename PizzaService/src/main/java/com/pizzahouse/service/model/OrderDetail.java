@@ -8,7 +8,7 @@ public class OrderDetail {
 	
 	private int pizzaSizeId;
 	
-	private List<Integer> pizzaToppingId;
+	private List<Integer> pizzaToppingIdList;
 	
 	private int quantity;
 
@@ -28,12 +28,12 @@ public class OrderDetail {
 		this.pizzaSizeId = pizzaSizeId;
 	}
 
-	public List<Integer> getPizzaToppingId() {
-		return pizzaToppingId;
+	public List<Integer> getPizzaToppingIdList() {
+		return pizzaToppingIdList;
 	}
 
-	public void setPizzaToppingId(List<Integer> pizzaToppingId) {
-		this.pizzaToppingId = pizzaToppingId;
+	public void setPizzaToppingIdList(List<Integer> pizzaToppingIdList) {
+		this.pizzaToppingIdList = pizzaToppingIdList;
 	}
 
 	public int getQuantity() {

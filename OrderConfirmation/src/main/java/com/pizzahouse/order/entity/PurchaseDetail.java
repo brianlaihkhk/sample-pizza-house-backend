@@ -29,6 +29,54 @@ public class PurchaseDetail {
     @Column(name="SUB_TOTAL", scale=2, nullable=false)
 	private float subTotal;
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public float getSinglePrice() {
+		return singlePrice;
+	}
+
+	public void setSinglePrice(float singlePrice) {
+		this.singlePrice = singlePrice;
+	}
+
+	public float getSubTotal() {
+		return subTotal;
+	}
+
+	public void setSubTotal(float subTotal) {
+		this.subTotal = subTotal;
+	}
+
 	
 	
 }

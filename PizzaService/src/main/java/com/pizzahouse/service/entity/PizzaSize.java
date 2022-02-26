@@ -24,7 +24,7 @@ public class PizzaSize {
     
     @Column(name="PRICE", scale=2, nullable=false)
 	private float price;
-	
+    
 	public int getId() {
 		return id;
 	}
