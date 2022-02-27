@@ -6,7 +6,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
-public class ConnectionHelper<T> {
+public class HttpConnectionHelper<T> {
 	public T post(String url, Object payload, Class<T> responseClass) {
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target(url);

@@ -9,16 +9,17 @@ import org.junit.runners.MethodSorters;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.pizzahouse.common.database.DatabaseQuery;
 import com.pizzahouse.common.entity.Session;
 import com.pizzahouse.common.entity.User;
 import com.pizzahouse.common.exception.UnauthorizedException;
 import com.pizzahouse.common.exception.UserProfileException;
 import com.pizzahouse.service.initialization.WebConfiguration;
+import com.pizzahouse.service.security.SecurityService;
 import com.pizzahouse.test.data.UserTestData;
 import com.pizzahouse.common.model.Response;
-import com.pizzahouse.common.security.SecurityService;
 import com.pizzahouse.service.controller.UserService;
+import com.pizzahouse.service.database.DatabaseQuery;
+
 import static org.junit.Assert.assertEquals;
 
 import java.security.NoSuchAlgorithmException;

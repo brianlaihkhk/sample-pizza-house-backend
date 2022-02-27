@@ -1,11 +1,14 @@
-package com.pizzahouse.common.database;
+package com.pizzahouse.service.database;
 
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+
+import com.pizzahouse.common.exception.DatabaseUnavailableException;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -14,20 +17,23 @@ import javax.persistence.criteria.Root;
 @Service
 public class DatabaseQuery<T> {
 	@Autowired
-	protected Session dbSession;
+	protected org.hibernate.Session dbSession;
 	@Autowired
-	protected Logger logger;
+	protected org.slf4j.Logger logger;
 
-	private CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
 	
-	public void setDbSession(Session dbSession) {
-		// for Junit initialization
-		this.dbSession = dbSession;
-	}
-
-	public void setLogger(Logger logger) {
-		// for Junit initialization
-		this.logger = logger;
+	/**
+	 * Check the DB connection is established or not
+	 * @return CriteriaBuilder object
+	 * @throws DatabaseUnavailableException 
+	 * 
+	 */
+	public CriteriaBuilder getCriteriaBuilder() throws DatabaseUnavailableException {
+		if (dbSession != null) {
+		    return dbSession.getCriteriaBuilder();
+		} else {
+			throw new DatabaseUnavailableException("Unable to obtain DB session");
+		}
 	}
 	
 	
@@ -38,8 +44,6 @@ public class DatabaseQuery<T> {
 	public boolean checkConnection () {
 		return dbSession.isConnected();
 	}
-
-
 
 	/**
 	 * Common function in selecting object Criteria Query
@@ -72,23 +76,16 @@ public class DatabaseQuery<T> {
 	 * Select all items in the table by specifying the target entity class
 	 * @param clazz Class object itself as entity mapping identifier
 	 * @return List of generic T object specified from creation
+	 * @throws DatabaseUnavailableException 
 	 */
-	public List<T> selectAll(Class<T> clazz){
+	public List<T> selectAll(Class<T> clazz) throws DatabaseUnavailableException{
 		logger.debug("Start select all");
-		CriteriaQuery<T> cq = criteriaBuilder.createQuery(clazz);
+		CriteriaQuery<T> cq = getCriteriaBuilder().createQuery(clazz);
 		Root<T> root = cq.from(clazz);
 		CriteriaQuery<T> query = cq.select(root);
 		return query(query);
 	}
 
-
-	/**
-	 * Function to call shared CriteriaBuilder object
-	 * @return CriteriaBuilder
-	 */
-	public CriteriaBuilder getCriteriaBuilder() {
-		return criteriaBuilder;
-	}
 
 	
 	/**

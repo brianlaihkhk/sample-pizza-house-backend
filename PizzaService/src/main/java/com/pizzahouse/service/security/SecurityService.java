@@ -1,4 +1,4 @@
-package com.pizzahouse.common.security;
+package com.pizzahouse.service.security;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -12,16 +12,22 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.codec.binary.Hex;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import com.pizzahouse.common.database.DatabaseQuery;
+import com.pizzahouse.service.database.DatabaseQuery;
 import com.pizzahouse.common.entity.Session;
 import com.pizzahouse.common.entity.User;
+import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 import com.pizzahouse.common.exception.UserProfileException;
 
+@Service
 public class SecurityService {
-	DatabaseQuery<User> userQuery = new DatabaseQuery<User>();
-	DatabaseQuery<Session> sessionQuery = new DatabaseQuery<Session>();
+	@Autowired
+	protected DatabaseQuery<User> userQuery;
+	@Autowired
+	protected DatabaseQuery<Session> sessionQuery;
 
 	/**
 	 * Validate user token by username 
@@ -29,8 +35,9 @@ public class SecurityService {
 	 * @param token Token input to validate
 	 * @return True if user token is verified and not expired, otherwise throw Exception
 	 * @throws UserProfileException 
+	 * @throws DatabaseUnavailableException 
 	 */
-	public boolean checkUserTokenByUsername (String username, String sessionToken, long expirationDay) throws UnauthorizedException, UserProfileException {
+	public boolean checkUserTokenByUsername (String username, String sessionToken, long expirationDay) throws UnauthorizedException, UserProfileException, DatabaseUnavailableException {
 		User user = getUserByUsername(username);
 		return checkUserTokenByUserId(user.getId(), sessionToken, expirationDay);
 	}
@@ -59,8 +66,9 @@ public class SecurityService {
 	 * Get user object by username 
 	 * @param username Username of the user
 	 * @return User object if found, otherwise throw error that cannot find the corresponding user
+	 * @throws DatabaseUnavailableException 
 	 */
-	public User getUserByUsername (String username) throws UserProfileException {
+	public User getUserByUsername (String username) throws UserProfileException, DatabaseUnavailableException {
 		Predicate[] predicates = new Predicate[1];
 
 		CriteriaBuilder criteriaBuilder = userQuery.getCriteriaBuilder();
@@ -121,7 +129,7 @@ public class SecurityService {
 	 * @param user User profile object
 	 * @return User profile object containing session token information
 	 */
-	public Session generateSession (int userId) throws NoSuchAlgorithmException {
+	public static Session generateSession (int userId) throws NoSuchAlgorithmException {
 		Long epoch = (System.currentTimeMillis() / 1000);
 		Session session = new Session();
 		
@@ -138,7 +146,7 @@ public class SecurityService {
 	 * @param input Input for generating the session token
 	 * @return Generated string using SHA256
 	 */
-	private String generateToken (String input) throws NoSuchAlgorithmException {
+	private static String generateToken (String input) throws NoSuchAlgorithmException {
 		MessageDigest digest;
 
 		digest = MessageDigest.getInstance("SHA-256");

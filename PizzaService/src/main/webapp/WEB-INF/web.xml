@@ -4,22 +4,26 @@
 
 <web-app>
   	<display-name>PizzaHouse PizzaService</display-name>
-	<context-param>
+ 	<context-param>
 	    <param-name>contextConfigLocation</param-name>
 	    <param-value>classpath:/applicationContext.xml</param-value>
-	</context-param>
+	</context-param> 
 	
-    <listener>
+<!--  <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
     <servlet>
-        <servlet-name>contextConfigLocation</servlet-name>
+        <servlet-name>app</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:/applicationContext.xml</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>contextConfigLocation</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
+        <servlet-name>app</servlet-name>
+        <url-pattern>/ws</url-pattern>
+    </servlet-mapping> -->
 </web-app>

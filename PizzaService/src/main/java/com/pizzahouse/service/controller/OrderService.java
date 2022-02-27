@@ -3,6 +3,11 @@ package com.pizzahouse.service.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
 import com.pizzahouse.service.initialization.DataLoader;
 import com.pizzahouse.common.model.Confirmation;
 import com.pizzahouse.common.model.ConfirmationDetail;
@@ -13,24 +18,26 @@ import com.pizzahouse.service.model.OrderDetail;
 import com.pizzahouse.common.model.Response;
 import com.pizzahouse.common.config.Connection;
 import com.pizzahouse.common.config.Default;
-import com.pizzahouse.common.connection.ConnectionHelper;
+import com.pizzahouse.common.connection.HttpConnectionHelper;
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 
+@Service
 public class OrderService {
-	
+	@Autowired
+	protected org.slf4j.Logger logger;
 	/**
 	 * Order submittion process to persist Order data in DB 
 	 * @param id User id from the user
 	 * @param order The order supplied by the user, containing the ordered item from front end.
 	 * @return Success with order complete / fail with error message 
 	 */
-	public Response submitOrder (int userId, Order order) throws UnauthorizedException, OrderFullfillmentException {
+	public static Response submitOrder (int userId, Order order) throws UnauthorizedException, OrderFullfillmentException {
 	
 		Confirmation confirmation = finalizeOrder(order);
 		confirmation.setUserId(userId);
 		
-		Response response = (new ConnectionHelper<Response>()).post(Connection.orderConfirmationServiceHost, confirmation, Response.class);
+		Response response = (new HttpConnectionHelper<Response>()).post(Connection.orderConfirmationServiceHost, confirmation, Response.class);
 		
 		return response;
 	}
@@ -41,7 +48,7 @@ public class OrderService {
 	 * @param order The order supplied by the user, containing the ordered item from front end.
 	 * @return Finalized confirmation object which is ready to persist in DB. The object containing the sub-total of each item, grand total of the order, and the item details of each order
 	 */
-	public Confirmation finalizeOrder (Order order) throws UnauthorizedException, OrderFullfillmentException {
+	public static Confirmation finalizeOrder (Order order) throws UnauthorizedException, OrderFullfillmentException {
 
 		Confirmation confirmation = new Confirmation();
 		List<ConfirmationDetail> details = new ArrayList<ConfirmationDetail>();

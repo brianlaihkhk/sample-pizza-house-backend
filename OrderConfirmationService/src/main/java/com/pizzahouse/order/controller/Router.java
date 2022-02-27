@@ -4,6 +4,9 @@ import javax.persistence.RollbackException;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,13 +22,16 @@ import com.pizzahouse.common.model.Response;
 
 import com.pizzahouse.order.controller.ConfirmationService;;
 
+@SpringBootApplication
 @Controller
+@ComponentScan(basePackages = "com.pizzahouse.order")
 @RequestMapping("/")
-public class Router {
-	ConfirmationService confirmationService = new ConfirmationService();
+public class Router extends SpringBootServletInitializer {
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
-	protected Logger logger;
+	protected org.slf4j.Logger logger;
+	@Autowired
+	protected ConfirmationService confirmationService;
 	
 	/**
 	 * Confirmation endpoint - Receive PizzaService request, communication through secure channel
@@ -71,5 +77,10 @@ public class Router {
 		return response;
 	}
 
+    public static void main(String[] args) {
+    	System.out.println("WebConfiguration run init");
+
+
+    }
 
 }

@@ -4,17 +4,22 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pizzahouse.common.database.DatabaseQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.model.Confirmation;
 import com.pizzahouse.common.model.ConfirmationDetail;
 import com.pizzahouse.common.model.Response;
+import com.pizzahouse.order.database.DatabaseQuery;
 import com.pizzahouse.order.entity.Purchase;
 import com.pizzahouse.order.entity.PurchaseDetail;
 
+@Service
 public class ConfirmationService {
-	DatabaseQuery<Purchase> purchaseQuery = new DatabaseQuery<Purchase>();
-
+	@Autowired
+	protected DatabaseQuery<Purchase> purchaseQuery;
+	
 	/**
 	 * Process and validate confirmation object and convert to Purchase for DB persistance 
 	 * @param confirmation Confirmation object that sent from PizzaService

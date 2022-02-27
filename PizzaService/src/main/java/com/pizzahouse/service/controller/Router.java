@@ -6,34 +6,46 @@ import javax.persistence.RollbackException;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pizzahouse.common.security.SecurityService;
 import com.pizzahouse.common.model.ErrorDetail;
 import com.pizzahouse.service.model.Order;
+import com.pizzahouse.service.security.SecurityService;
 import com.pizzahouse.common.model.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pizzahouse.common.config.Default;
 import com.pizzahouse.common.config.ErrorCode;
 import com.pizzahouse.common.entity.Session;
+import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 import com.pizzahouse.common.exception.UserProfileException;
 
+@SpringBootApplication
 @Controller
+@ComponentScan(basePackages = "com.pizzahouse.service")
 @RequestMapping("/")
-public class Router {
+public class Router extends SpringBootServletInitializer {
 	
-	private UserService userService;
-	private OrderService orderService;
-	private SecurityService securityService;
 	private ObjectMapper mapper = new ObjectMapper();
 	@Autowired
-	protected Logger logger;
+	protected org.slf4j.Logger logger;
+	@Autowired
+	protected org.hibernate.Session dbSession;
+	@Autowired
+	SecurityService securityService;
+	@Autowired
+	UserService userService;
+	@Autowired
+	OrderService orderService;
 	
 	/**
 	 * User login (via username) WS end point 
@@ -58,6 +70,13 @@ public class Router {
 			response.setSuccess(false);
 			response.setError(error);
 			logger.warn("[RollbackException] transaction has been rejected and rolled back" + e.getMessage());
+		} catch(DatabaseUnavailableException e) {
+			error.setErrorCode(ErrorCode.databaseUnavailableException);
+			error.setErrorMessage("Database connection error, cannot obtain DB session");
+			
+			response.setSuccess(false);
+			response.setError(error);
+			logger.error("[DatabaseUnavailableException] Database connection error, cannot obtain DB session" + e.getMessage());
 		} catch(UserProfileException e) {
 			error.setErrorCode(ErrorCode.userProfileException);
 			error.setErrorMessage(e.getMessage());
@@ -93,6 +112,7 @@ public class Router {
 	@RequestMapping(value = "create", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public Response<Session> createUser (String username, String firstName, String lastName, String password) {
+		
 		Response<Session> response = new Response<Session>();
 		ErrorDetail error = new ErrorDetail();
 		
@@ -107,6 +127,13 @@ public class Router {
 			response.setSuccess(false);
 			response.setError(error);
 			logger.warn("[RollbackException] transaction has been rejected and rolled back" + e.getMessage());
+//		} catch(DatabaseUnavailableException e) {
+//			error.setErrorCode(ErrorCode.databaseUnavailableException);
+//			error.setErrorMessage("Database connection error, cannot obtain DB session");
+//			
+//			response.setSuccess(false);
+//			response.setError(error);
+//			logger.error("[DatabaseUnavailableException] Database connection error, cannot obtain DB session" + e.getMessage());
 		} catch(UserProfileException e) {
 			error.setErrorCode(ErrorCode.userProfileException);
 			error.setErrorMessage(e.getMessage());
@@ -143,6 +170,7 @@ public class Router {
 	@RequestMapping(value = "order", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public Response<String> submitOrder (int userId, String sessionToken, Order order) {
+
 		Response<String> response = new Response<String>();
 		ErrorDetail error = new ErrorDetail();
 		
@@ -158,6 +186,13 @@ public class Router {
 			response.setSuccess(false);
 			response.setError(error);
 			logger.warn("[RollbackException] transaction has been rejected and rolled back : " + e.getMessage());
+//		} catch(DatabaseUnavailableException e) {
+//			error.setErrorCode(ErrorCode.databaseUnavailableException);
+//			error.setErrorMessage("Database connection error, cannot obtain DB session");
+//			
+//			response.setSuccess(false);
+//			response.setError(error);
+//			logger.error("[DatabaseUnavailableException] Database connection error, cannot obtain DB session" + e.getMessage());
 		} catch(UnauthorizedException e) {
 			error.setErrorCode(ErrorCode.unauthorizedException);
 			error.setErrorMessage(e.getMessage());
@@ -187,9 +222,20 @@ public class Router {
 	@RequestMapping(value = "test", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public Response<Session> test () throws NoSuchAlgorithmException, UserProfileException {
+
 		logger.info("calling PizzaHouse /test endpoint");
 		long epoch = (System.currentTimeMillis() / 1000); 
-    	Response<Session> jamesResponse = userService.createUser("james" + String.valueOf(epoch), "james", "james", "ames");
+		String james = "james" + String.valueOf(epoch);
+		logger.info("32342342");
+
+    	Response<Session> jamesResponse = userService.createUser(james, "james", "james", "ames");
     	return jamesResponse;
 	}
+	
+
+    public static void main(String[] args) {
+    	System.out.println("WebConfiguration run init");
+
+
+    }
 }
