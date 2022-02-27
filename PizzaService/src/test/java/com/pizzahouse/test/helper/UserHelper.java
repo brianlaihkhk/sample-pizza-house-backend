@@ -2,8 +2,8 @@ package com.pizzahouse.test.helper;
 
 import java.sql.Date;
 
-import com.pizzahouse.common.entity.Session;
-import com.pizzahouse.common.entity.User;
+import com.pizzahouse.service.entity.Session;
+import com.pizzahouse.service.entity.User;
 
 public class UserHelper {
 	

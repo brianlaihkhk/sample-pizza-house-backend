@@ -1,4 +1,4 @@
-package com.pizzahouse.common.entity;
+package com.pizzahouse.service.entity;
 
 import java.sql.Date;
 

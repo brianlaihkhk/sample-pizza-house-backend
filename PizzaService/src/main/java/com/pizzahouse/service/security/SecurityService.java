@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pizzahouse.service.database.DatabaseQuery;
-import com.pizzahouse.common.entity.Session;
-import com.pizzahouse.common.entity.User;
+import com.pizzahouse.service.entity.Session;
+import com.pizzahouse.service.entity.User;
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 import com.pizzahouse.common.exception.UserProfileException;

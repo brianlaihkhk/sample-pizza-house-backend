@@ -16,8 +16,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.pizzahouse.order.entity.PurchaseDetail;
-import com.pizzahouse.common.entity.Session;
-import com.pizzahouse.common.entity.User;
 
 @Entity
 @Table(name="PURCHASE")
@@ -28,15 +26,15 @@ public class Purchase {
 	@Column(name="PURCHASE_ID")
 	private int id;
 
-    @OneToMany
-    @JoinColumn(name = "USER_ID")
+    @Column(name = "USER_ID")
 	private int userId;
 
     @Column(name="TOTAL_AMOUNT", scale=2, nullable=false)
 	private float totalAmount;
 
     @OneToMany
-	private List<PurchaseDetail> detail;
+    @JoinColumn(name="PURCHASE_ID")
+	private List<PurchaseDetail> details;
 
 	@Column(name = "CREATION_TIME", columnDefinition="DATETIME")
 	private Date creationTime;
@@ -68,12 +66,12 @@ public class Purchase {
 		this.totalAmount = totalAmount;
 	}
 
-	public List<PurchaseDetail> getDetail() {
-		return detail;
+	public List<PurchaseDetail> getDetails() {
+		return details;
 	}
 
-	public void setDetail(List<PurchaseDetail> detail) {
-		this.detail = detail;
+	public void setDetails(List<PurchaseDetail> details) {
+		this.details = details;
 	}
 
 	public Date getCreationTime() {

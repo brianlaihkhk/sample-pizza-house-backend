@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pizzahouse.common.model.ErrorDetail;
+import com.pizzahouse.service.entity.Session;
 import com.pizzahouse.service.model.Order;
 import com.pizzahouse.service.security.SecurityService;
 import com.pizzahouse.common.model.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pizzahouse.common.config.Default;
 import com.pizzahouse.common.config.ErrorCode;
-import com.pizzahouse.common.entity.Session;
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.exception.UnauthorizedException;

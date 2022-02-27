@@ -1,4 +1,4 @@
-package com.pizzahouse.common.entity;
+package com.pizzahouse.service.entity;
 
 import java.io.Serializable;
 
@@ -15,9 +15,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Fetch;
 
-import com.pizzahouse.common.entity.Session;
+import com.pizzahouse.service.entity.Session;
+
+import org.hibernate.annotations.Fetch;
 
 @Entity
 @Table(name="USER")

@@ -59,7 +59,10 @@ public class ConfirmationService {
 		Response<String> response = new Response<String>();
 		
 		Purchase purchase = processConfirmation(confirmation);
-		purchaseQuery.insert(purchase);		
+		int recordId = purchaseQuery.insert(purchase);	
+		
+		response.setSuccess(true);
+		response.setPayload("Order cofirmed : " + recordId);
 		
 		return response;
 	}

@@ -1,8 +1,8 @@
 package com.pizzahouse.test.data;
 
 
-import com.pizzahouse.common.entity.Session;
-import com.pizzahouse.common.entity.User;
+import com.pizzahouse.service.entity.Session;
+import com.pizzahouse.service.entity.User;
 import com.pizzahouse.test.helper.UserHelper;
 
 public class UserTestData {

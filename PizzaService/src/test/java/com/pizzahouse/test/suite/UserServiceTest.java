@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.pizzahouse.common.entity.Session;
-import com.pizzahouse.common.entity.User;
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 import com.pizzahouse.common.exception.UserProfileException;
@@ -22,6 +20,8 @@ import com.pizzahouse.test.data.UserTestData;
 import com.pizzahouse.common.model.Response;
 import com.pizzahouse.service.controller.UserService;
 import com.pizzahouse.service.database.DatabaseQuery;
+import com.pizzahouse.service.entity.Session;
+import com.pizzahouse.service.entity.User;
 
 import static org.junit.Assert.assertEquals;
 
