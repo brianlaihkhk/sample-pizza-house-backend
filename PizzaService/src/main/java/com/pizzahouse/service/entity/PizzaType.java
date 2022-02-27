@@ -14,7 +14,7 @@ public class PizzaType {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="PIZZA_TYPE_ID")
-	private int id;
+	private int typeId;
 
     @Column(name="NAME", length=100, nullable=false)
 	private String name;
@@ -22,11 +22,11 @@ public class PizzaType {
     @Column(name="DESCRIPTION", length=1000, nullable=false)
 	private String description;
     
-	public int getId() {
-		return id;
+	public int getTypeId() {
+		return typeId;
 	}
-	public void setId(int id) {
-		this.id = id;
+	public void setTypeId(int typeId) {
+		this.typeId = typeId;
 	}
 	public String getName() {
 		return name;

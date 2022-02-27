@@ -3,11 +3,11 @@ package com.pizzahouse.service.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pizzahouse.service.entity.FlattenPizzaSize;
-import com.pizzahouse.service.entity.FlattenPizzaTopping;
 import com.pizzahouse.service.initialization.DataLoader;
 import com.pizzahouse.common.model.Confirmation;
 import com.pizzahouse.common.model.ConfirmationDetail;
+import com.pizzahouse.service.model.FlattenPizzaSize;
+import com.pizzahouse.service.model.FlattenPizzaTopping;
 import com.pizzahouse.service.model.Order;
 import com.pizzahouse.service.model.OrderDetail;
 import com.pizzahouse.common.model.Response;

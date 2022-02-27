@@ -1,31 +1,18 @@
-package com.pizzahouse.service.entity;
+package com.pizzahouse.service.model;
 
-import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import com.pizzahouse.service.entity.PizzaTopping;
+import com.pizzahouse.service.entity.PizzaType;
 
-@Entity
-@Table(name="PIZZA")
+
 public class FlattenPizzaTopping {
 
-	@Column(name="PIZZA_TYPE_ID")
 	private int pizzaTypeId;
 
-	@Column(name="PIZZA_TOPPING_ID")
 	private int pizzaToppingId;
 	
-    @JoinColumn(name = "PIZZA_TYPE_ID")
 	private PizzaType pizzaType;
    
-    
-    @JoinColumn(name = "PIZZA_TOPPING_ID")
 	private PizzaTopping pizzaTopping;
 
 	public int getPizzaTypeId() {

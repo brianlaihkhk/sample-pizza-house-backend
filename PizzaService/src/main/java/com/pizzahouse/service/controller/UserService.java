@@ -15,6 +15,7 @@ import javax.persistence.criteria.Predicate;
 
 public class UserService {
 	private DatabaseQuery<User> userQuery = new DatabaseQuery<User>();
+	private DatabaseQuery<Session> sessionQuery = new DatabaseQuery<Session>();
 	private SecurityService securityService = new SecurityService();
 
 	/**
@@ -22,17 +23,20 @@ public class UserService {
 	 * @param username Username input from user during login
 	 * @param password Password input from user during login (SHA256 salt)
 	 * @return Success with session token / fail with error message
+	 * @throws UserProfileException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	public Response<Session> userLogin (String username, String password) throws UnauthorizedException {
+	public Response<Session> userLogin (String username, String password) throws UnauthorizedException, UserProfileException, NoSuchAlgorithmException {
 		Response<Session> response = new Response<Session>();
 
-		Predicate[] predicates = new Predicate[1];
-		predicates[0] = userQuery.getCriteriaBuilder().equal(userQuery.getRoot(User.class).get("username"), username);
-		List<User> result = userQuery.selectByCriteria(User.class, predicates);
+		User user = securityService.getUserByUsername(username);
 		
-		if (result.size() == 1 && result.get(0).getPassword() == password) {
+		if (user != null && user.getPassword() != null) {
+			if (user.getPassword() == password) {
+				throw new UnauthorizedException("Invalid password for user");
+			}
 			response.setSuccess(true);
-			response.setPayload(result.get(0).getSession());
+			response.setPayload(securityService.refreshSession(user));
 		} else {
 			throw new UnauthorizedException("Cannot obtain user by username");
 		}
@@ -53,12 +57,11 @@ public class UserService {
 		Response<Session> response = new Response<Session>();
 			
 		User user = new User (username, firstName, lastName, password);
-		user = securityService.setToken(user);
 		int id = userQuery.insert(user);
 
 		if (id > 0) {
 			response.setSuccess(true);
-			response.setPayload(userQuery.select(User.class, id).getSession());
+			response.setPayload(securityService.refreshSession(user));
 		} else {
 			throw new UserProfileException("Unable to create new user. User may be registered or username may be taken by other users");
 		}

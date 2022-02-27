@@ -4,14 +4,16 @@ import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="SESSION")
 public class Session {
 
-	@Column(name="USER_ID")
-	private int id;	
+	@Id
+	@Column(name="USER_ID", nullable=false)
+	private int userId;	
 
 	@Column(name="SESSION_TOKEN", nullable=false)
 	private String token;
@@ -22,12 +24,12 @@ public class Session {
 	@Column(name="CREATION_EPOCH_TIME")
 	private long creationEpochTime;
 	
-    public int getId() {
-		return id;
+    public int getUserId() {
+		return userId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setUserId(int id) {
+		this.userId = id;
 	}
 	
 	public String getToken() {

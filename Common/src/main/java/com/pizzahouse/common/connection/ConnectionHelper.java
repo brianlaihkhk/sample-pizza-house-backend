@@ -10,8 +10,6 @@ public class ConnectionHelper<T> {
 	public T post(String url, Object payload, Class<T> responseClass) {
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target(url);
-		return target.request(MediaType.APPLICATION_JSON)
-		                        .accept(MediaType.TEXT_PLAIN_TYPE)
-		                        .post(Entity.json(payload), responseClass);
+		return target.request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN_TYPE).post(Entity.json(payload), responseClass);
 	}
 }

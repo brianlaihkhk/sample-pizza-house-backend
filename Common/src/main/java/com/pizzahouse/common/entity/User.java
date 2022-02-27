@@ -1,16 +1,21 @@
 package com.pizzahouse.common.entity;
 
+import java.io.Serializable;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
+
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Fetch;
 
 import com.pizzahouse.common.entity.Session;
 
@@ -46,10 +51,7 @@ public class User {
 
     @Column(name="PASSWORD", nullable=false)
 	private String password;
-    
-    @OneToOne
-    @JoinColumn(name = "USER_ID")
-    private Session session;
+
 
 	public int getId() {
 		return id;
@@ -92,12 +94,4 @@ public class User {
 	}
 	
 
-	public Session getSession() {
-		return session;
-	}
-
-	public void setSession(Session session) {
-		this.session = session;
-	}
-    
 }

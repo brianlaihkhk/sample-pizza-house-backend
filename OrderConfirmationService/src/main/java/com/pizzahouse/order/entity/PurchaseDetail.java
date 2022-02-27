@@ -11,6 +11,7 @@ import javax.persistence.Table;
 @Table(name="PURCHASE_DETAIL")
 public class PurchaseDetail {
 
+	@Id
 	@Column(name="PURCHASE_ID")
 	private int purchaseId;
 	

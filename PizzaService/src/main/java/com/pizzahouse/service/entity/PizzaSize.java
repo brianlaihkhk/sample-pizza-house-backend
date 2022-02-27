@@ -8,13 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="PIZZA")
+@Table(name="PIZZA_SIZE")
 public class PizzaSize {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="PIZZA_ID")
-	private int id;
+	@Column(name="PIZZA_SIZE_ID")
+	private int sizeId;
 
     @Column(name="NAME", length=100, nullable=false)
 	private String name;
@@ -25,11 +25,11 @@ public class PizzaSize {
     @Column(name="PRICE", scale=2, nullable=false)
 	private float price;
     
-	public int getId() {
-		return id;
+	public int getSizeId() {
+		return sizeId;
 	}
-	public void setId(int id) {
-		this.id = id;
+	public void setSizeId(int sizeId) {
+		this.sizeId = sizeId;
 	}
 	public String getName() {
 		return name;

@@ -16,10 +16,9 @@ public class UserHelper {
 	 * @param session Session token of the user
 	 * @return OrderDetail object
 	 */
- 	public static User createUser(String username, String firstName, String lastName, String password, Session session){
+ 	public static User createUser(String username, String firstName, String lastName, String password){
  		User user = new User(username, firstName, lastName, password);
- 		user.setSession(session);
- 		
+		
  		return user;
     }
 
@@ -30,8 +29,9 @@ public class UserHelper {
 	 * @param creationEpochTime Create time in epoch format (Using Date column in mysql will have performance issue under high frequency select)
 	 * @return Session object
 	 */
- 	public static Session createSession(String token, long creationEpochTime){
+ 	public static Session createSession(int userId, String token, long creationEpochTime){
  		Session session = new Session();
+ 		session.setUserId(userId);
  		session.setToken(token);
  		session.setCreationEpochTime(creationEpochTime);
 

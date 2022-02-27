@@ -14,7 +14,7 @@ public class PizzaTopping {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="PIZZA_TOPPING_ID")
-	private int id;
+	private int toppingId;
 
     @Column(name="NAME", length=100, nullable=false)
 	private String name;
@@ -25,12 +25,13 @@ public class PizzaTopping {
     @Column(name="PRICE", scale=2, nullable=false)
 	private float price;
 	
-	public int getId() {
-		return id;
+	public int getToppingId() {
+		return toppingId;
 	}
-	public void setId(int id) {
-		this.id = id;
+	public void setToppingId(int toppingId) {
+		this.toppingId = toppingId;
 	}
+	
 	public String getName() {
 		return name;
 	}

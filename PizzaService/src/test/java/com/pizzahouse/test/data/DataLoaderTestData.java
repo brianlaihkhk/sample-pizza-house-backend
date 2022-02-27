@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.pizzahouse.service.entity.PizzaSize;
-import com.pizzahouse.service.entity.FlattenPizzaSize;
 import com.pizzahouse.service.entity.PizzaTopping;
-import com.pizzahouse.service.entity.FlattenPizzaTopping;
 import com.pizzahouse.service.entity.PizzaType;
+import com.pizzahouse.service.model.FlattenPizzaSize;
+import com.pizzahouse.service.model.FlattenPizzaTopping;
 import com.pizzahouse.test.helper.PizzaHelper;
 
 public class DataLoaderTestData {

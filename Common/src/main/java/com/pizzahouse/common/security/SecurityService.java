@@ -4,11 +4,12 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.codec.binary.Hex;
 
@@ -16,29 +17,22 @@ import com.pizzahouse.common.database.DatabaseQuery;
 import com.pizzahouse.common.entity.Session;
 import com.pizzahouse.common.entity.User;
 import com.pizzahouse.common.exception.UnauthorizedException;
+import com.pizzahouse.common.exception.UserProfileException;
 
 public class SecurityService {
 	DatabaseQuery<User> userQuery = new DatabaseQuery<User>();
+	DatabaseQuery<Session> sessionQuery = new DatabaseQuery<Session>();
 
 	/**
 	 * Validate user token by username 
 	 * @param username Username of the user
 	 * @param token Token input to validate
 	 * @return True if user token is verified and not expired, otherwise throw Exception
+	 * @throws UserProfileException 
 	 */
-	public boolean checkUserTokenByUsername (String username, String sessionToken, long expirationDay) throws UnauthorizedException {
-		long epochValidTime = (System.currentTimeMillis() / 1000) - expirationDay * 24 * 3600;
-
-		Predicate[] predicates = new Predicate[1];
-		predicates[0] = userQuery.getCriteriaBuilder().equal(userQuery.getRoot(User.class).get("username"), username);
-		List<User> result = userQuery.selectByCriteria(User.class, predicates);
-		
-		if (result.size() == 1 && result.get(0).getSession() != null && result.get(0).getSession().getToken() == sessionToken && result.get(0).getSession().getCreationEpochTime() > epochValidTime) {
-			return true;
-		} else if (result.get(0).getSession().getCreationEpochTime() < epochValidTime) {
-			throw new UnauthorizedException("Token expired, unauthorized action");
-		}
-		throw new UnauthorizedException("Token not match, unauthorized action");
+	public boolean checkUserTokenByUsername (String username, String sessionToken, long expirationDay) throws UnauthorizedException, UserProfileException {
+		User user = getUserByUsername(username);
+		return checkUserTokenByUserId(user.getId(), sessionToken, expirationDay);
 	}
 	
 	/**
@@ -50,31 +44,92 @@ public class SecurityService {
 	public boolean checkUserTokenByUserId (int userId, String sessionToken, long expirationDay) throws UnauthorizedException {
 		long epochValidTime = (System.currentTimeMillis() / 1000) - expirationDay * 24 * 3600;	
 		
-		User user = new User();
-		user = userQuery.select(User.class, userId);
+		Session session = getSession(userId);
 				
-		if (user.getSession() != null && user.getSession().getToken() == sessionToken && user.getSession().getCreationEpochTime() > epochValidTime) {
+		if (session != null && session.getToken() == sessionToken) {
+			if (session.getCreationEpochTime() < epochValidTime) {
+				throw new UnauthorizedException("Token expired, unauthorized action");
+			}
 			return true;
-		}  else if (user.getSession().getCreationEpochTime() < epochValidTime) {
-			throw new UnauthorizedException("Token expired, unauthorized action");
 		}
-		throw new UnauthorizedException("Unmatched token, unauthorized action");
+		throw new UnauthorizedException("Token not match, unauthorized action");
+	}
+	
+	/**
+	 * Get user object by username 
+	 * @param username Username of the user
+	 * @return User object if found, otherwise throw error that cannot find the corresponding user
+	 */
+	public User getUserByUsername (String username) throws UserProfileException {
+		Predicate[] predicates = new Predicate[1];
+
+		CriteriaBuilder criteriaBuilder = userQuery.getCriteriaBuilder();
+		CriteriaQuery<User> cq = criteriaBuilder.createQuery(User.class);
+		Root<User> root = cq.from(User.class);
+		predicates[0] = criteriaBuilder.equal(root.get("username"), username);
+		CriteriaQuery<User> query = cq.select(root).where(predicates);
+		
+		List<User> result = userQuery.query(query);
+		
+		if (result.size() == 1) {
+			return result.get(0);
+		} else {
+			throw new UserProfileException("Cannot find the user specified");
+		}
+	}
+	
+	/**
+	 * Get Session object of the user
+	 * @param user User object of the user
+	 * @return Session object if found, otherwise null
+	 */
+	public Session getSession (User user) {
+		return getSession(user.getId());
 	}
 
 	/**
-	 * Add session token information to the user object 
+	 * Get Session object of the user
+	 * @param userId Userid of the user
+	 * @return Session object if found, otherwise null
+	 */
+	public Session getSession (int userId) {
+		return sessionQuery.selectById(Session.class, userId);
+	}
+
+	/**
+	 * Set Session object of the user
+	 * @param user User object of the user
+	 * @return Session object if transaction complete, otherwise throw exception
+	 */
+	public Session refreshSession (User user) throws NoSuchAlgorithmException {
+		return refreshSession(user.getId());
+	}
+	
+	/**
+	 * Set Session object of the user by user id
+	 * @param user Userid of the user
+	 * @return Session object if transaction complete, otherwise throw exception
+	 */
+	public Session refreshSession (int userId) throws NoSuchAlgorithmException {
+		Session session = generateSession(userId);
+		sessionQuery.insertOrUpdate(session);
+		return session;
+	}
+	
+	/**
+	 * Generate session token information to the user object 
 	 * @param user User profile object
 	 * @return User profile object containing session token information
 	 */
-	public User setToken (User user) throws NoSuchAlgorithmException {
+	public Session generateSession (int userId) throws NoSuchAlgorithmException {
 		Long epoch = (System.currentTimeMillis() / 1000);
 		Session session = new Session();
 		
+		session.setUserId(userId);
 		session.setCreationEpochTime(epoch);
 		session.setCreationTime(new Date(epoch * 1000));
 		session.setToken(generateToken(epoch.toString()));
-		user.setSession(session);
-		return user;
+		return session;
 	}	
 	
 	
