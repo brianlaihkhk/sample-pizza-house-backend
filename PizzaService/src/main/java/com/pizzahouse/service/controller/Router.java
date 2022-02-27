@@ -226,7 +226,6 @@ public class Router extends SpringBootServletInitializer {
 		logger.info("calling PizzaHouse /test endpoint");
 		long epoch = (System.currentTimeMillis() / 1000); 
 		String james = "james" + String.valueOf(epoch);
-		logger.info("32342342");
 
     	Response<Session> jamesResponse = userService.createUser(james, "james", "james", "ames");
     	return jamesResponse;

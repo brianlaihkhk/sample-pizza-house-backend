@@ -34,11 +34,14 @@ public class UserService {
 	 */
 	public Response<Session> userLogin (String username, String password) throws UnauthorizedException, UserProfileException, NoSuchAlgorithmException, DatabaseUnavailableException {
 		Response<Session> response = new Response<Session>();
+		logger.debug(username);
+		logger.debug(password);
 
 		User user = securityService.getUserByUsername(username);
-		
+		logger.debug(user.getPassword());
+
 		if (user != null && user.getPassword() != null) {
-			if (user.getPassword() == password) {
+			if (user.getPassword() != password) {
 				throw new UnauthorizedException("Invalid password for user");
 			}
 			response.setSuccess(true);
@@ -68,7 +71,7 @@ public class UserService {
 	
 		if (id > 0) {
 			response.setSuccess(true);
-			response.setPayload(securityService.refreshSession(user));
+			response.setPayload(securityService.createSession(user.getId()));
 		} else {
 			throw new UserProfileException("Unable to create new user. User may be registered or username may be taken by other users");
 		}

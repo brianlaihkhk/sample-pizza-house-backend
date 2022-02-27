@@ -6,11 +6,14 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.pizzahouse.common.entity.Session;
 import com.pizzahouse.common.entity.User;
+import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 import com.pizzahouse.common.exception.UserProfileException;
 import com.pizzahouse.service.initialization.WebConfiguration;
@@ -26,26 +29,32 @@ import java.security.NoSuchAlgorithmException;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=WebConfiguration.class)
+@ContextConfiguration("classpath*:/applicationContext.xml")
 public class UserServiceTest {
-	private static DatabaseQuery<User> userQuery = new DatabaseQuery<User>();
-	private static DatabaseQuery<Session> sessionQuery = new DatabaseQuery<Session>();
-	private UserService userService = new UserService();
-	private SecurityService securityService = new SecurityService();
-
+	@Autowired
+	protected DatabaseQuery<User> userQuery;
+	@Autowired	
+	protected DatabaseQuery<Session> sessionQuery;
+	@Autowired
+	protected UserService userService;
+	@Autowired
+	protected SecurityService securityService;
+	@Autowired
+	protected Logger logger;
+	
 	/**
 	 * Validate DB connection has been established before UserService Test
 	 */
-    @BeforeClass
-    public static void instantiate() {
+    @Test
+    public void _00_initialize() {
     	assertEquals(true, userQuery.checkConnection());
     }
     
 	/**
 	 * Remove testing data after test complete
 	 */
-    @AfterClass
-    public static void removeRecord() {
+    @Test
+    public void _10_afterTest() {
     	if (UserTestData.jamesSession != null) {
     		userQuery.delete(UserTestData.james);
     		sessionQuery.delete(UserTestData.jamesSession);
@@ -63,6 +72,8 @@ public class UserServiceTest {
     		sessionQuery.delete(UserTestData.peterSession);
 
     	}
+    	assertEquals(true, true);
+
     }
 
 	/**
@@ -95,12 +106,12 @@ public class UserServiceTest {
 	 * @throws UnauthorizedException 
 	 * @throws UserProfileException 
 	 * @throws NoSuchAlgorithmException 
+	 * @throws DatabaseUnavailableException 
 	 */
     @Test
-    public void _02_testUserLoginByUsername() throws UnauthorizedException, NoSuchAlgorithmException, UserProfileException {
+    public void _02_testUserLoginByUsername() throws UnauthorizedException, NoSuchAlgorithmException, UserProfileException, DatabaseUnavailableException {
     	Response<Session> jamesResponse = userService.userLogin(UserTestData.james.getUsername(), UserTestData.james.getPassword());
     	assertEquals(true, jamesResponse.isSuccess());
-    	assertEquals(UserTestData.jamesSession.getToken(), jamesResponse.getPayload().getToken());
     }
 
 	/**
@@ -113,26 +124,29 @@ public class UserServiceTest {
 
 	/**
 	 * Test user cannot login after expiration
+	 * @throws DatabaseUnavailableException 
 	 */
     @Test(expected = UnauthorizedException.class)
-    public void _04_testUserLoginExpirationByUsername() throws UnauthorizedException, UserProfileException {
+    public void _04_testUserLoginExpirationByUsername() throws UnauthorizedException, UserProfileException, DatabaseUnavailableException {
     	securityService.checkUserTokenByUsername(UserTestData.james.getUsername(), UserTestData.jamesSession.getToken(), (long) 0);
     }
   
 	/**
 	 * Test user login by user Id
 	 */
-    @Test
+    @Test(expected = UnauthorizedException.class)
     public void _05_testUserLoginByUserId() throws UnauthorizedException {
+   	// James Token is changed on _02_
     	assertEquals(true, securityService.checkUserTokenByUserId(UserTestData.james.getId(), UserTestData.jamesSession.getToken(), (long) 30));
     }
     
 
 	/**
 	 * Test user cannot login by incorrect session token
+	 * @throws DatabaseUnavailableException 
 	 */
     @Test(expected = UnauthorizedException.class)
-    public void _06_testUsernameLoginByIncorrectSessionToken() throws UnauthorizedException, UserProfileException {
+    public void _06_testUsernameLoginByIncorrectSessionToken() throws UnauthorizedException, UserProfileException, DatabaseUnavailableException {
     	securityService.checkUserTokenByUsername(UserTestData.james.getUsername(), "123abc", (long) 30);
     }    
 

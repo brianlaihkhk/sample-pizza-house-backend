@@ -6,7 +6,12 @@ import static org.junit.Assert.assertNull;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.exception.UnauthorizedException;
@@ -19,9 +24,14 @@ import com.pizzahouse.test.data.OrderTestData;
 
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath*:/applicationContext.xml")
 public class OrderServiceTest {
-	OrderService orderService = new OrderService();
-	
+	@Autowired
+	protected OrderService orderService;
+	@Autowired
+	protected Logger logger;
+
 	/**
 	 * Populate data to PizzaSizeMap and PizzaToppingMap
 	 */

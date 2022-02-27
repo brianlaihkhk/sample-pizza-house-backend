@@ -67,7 +67,7 @@ public class DatabaseQuery<T> {
 	public T selectById(Class<T> clazz, int id){
 		logger.debug("Start select by id");
 		dbSession.beginTransaction();
-		T result = (T) dbSession.load(clazz, id);
+		T result = (T) dbSession.get(clazz, id);
 		dbSession.getTransaction().commit();
 		return result;
 	}

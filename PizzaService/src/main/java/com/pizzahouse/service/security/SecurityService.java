@@ -12,6 +12,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,8 @@ public class SecurityService {
 	protected DatabaseQuery<User> userQuery;
 	@Autowired
 	protected DatabaseQuery<Session> sessionQuery;
+	@Autowired
+	protected Logger logger;
 
 	/**
 	 * Validate user token by username 
@@ -119,8 +122,33 @@ public class SecurityService {
 	 * @return Session object if transaction complete, otherwise throw exception
 	 */
 	public Session refreshSession (int userId) throws NoSuchAlgorithmException {
-		Session session = generateSession(userId);
-		sessionQuery.insertOrUpdate(session);
+		long epoch = (System.currentTimeMillis() / 1000);
+		String token = generateToken();
+		Session session = sessionQuery.selectById(Session.class, userId);
+		logger.debug(session.toString());
+		if (session != null && session.getToken().length() > 0) {
+			session.setToken(token);
+			sessionQuery.insertOrUpdate(session);
+		} else {
+			createSession(userId);
+		}
+		return session;
+	}
+	
+	/**
+	 * Set Create session by user id
+	 * @param user Userid of the user
+	 * @return Session object if transaction complete, otherwise throw exception
+	 */
+	public Session createSession (int userId) throws NoSuchAlgorithmException {
+		long epoch = (System.currentTimeMillis() / 1000);
+		String token = generateToken();
+		Session session = new Session();
+		session.setCreationEpochTime(epoch);
+		session.setCreationTime(new Date(epoch * 1000));
+		session.setToken(token);
+		session.setUserId(userId);
+		sessionQuery.insert(session);
 		return session;
 	}
 	
@@ -129,15 +157,9 @@ public class SecurityService {
 	 * @param user User profile object
 	 * @return User profile object containing session token information
 	 */
-	public static Session generateSession (int userId) throws NoSuchAlgorithmException {
-		Long epoch = (System.currentTimeMillis() / 1000);
-		Session session = new Session();
-		
-		session.setUserId(userId);
-		session.setCreationEpochTime(epoch);
-		session.setCreationTime(new Date(epoch * 1000));
-		session.setToken(generateToken(epoch.toString()));
-		return session;
+	public static String generateToken () throws NoSuchAlgorithmException {
+		long epoch = (System.currentTimeMillis() / 1000);
+		return generateToken(String.valueOf(epoch));
 	}	
 	
 	
