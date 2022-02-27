@@ -10,8 +10,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name="PURCHASE_DETAIL")
 public class PurchaseDetail {
-
+	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="PURCHASE_DETAIL_ID")
+	private int purchaseDetailId;
+
 	@Column(name="PURCHASE_ID")
 	private int purchaseId;
 	
@@ -32,6 +36,15 @@ public class PurchaseDetail {
 
     @Column(name="SUB_TOTAL", scale=2, nullable=false)
 	private float subTotal;
+    
+
+	public int getPurchaseDetailId() {
+		return purchaseDetailId;
+	}
+
+	public void setPurchaseDetailId(int purchaseDetailId) {
+		this.purchaseDetailId = purchaseDetailId;
+	}
 
 	public int getPurchaseId() {
 		return purchaseId;

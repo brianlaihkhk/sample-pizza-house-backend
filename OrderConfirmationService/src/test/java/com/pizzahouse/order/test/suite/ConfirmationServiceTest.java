@@ -2,6 +2,8 @@ package com.pizzahouse.order.test.suite;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,11 +53,13 @@ public class ConfirmationServiceTest {
 
     	Confirmation confirmation = ConfirmationTestData.generateConfirmationSet1();
     	Purchase purchase = confirmationService.processConfirmation(confirmation);
+    	List<PurchaseDetail> purchaseDetails = confirmationService.processConfirmationDetail(1, confirmation);
+
     	assertEquals(purchase.getUserId(), confirmation.getUserId());
     	assertEquals(purchase.getTotalAmount(), confirmation.getTotalAmount(), 0.001f);
-    	assertEquals(purchase.getDetails().size(), confirmation.getDetails().size());
+    	assertEquals(purchaseDetails.size(), confirmation.getDetails().size());
 
-    	for (PurchaseDetail purchaseDetail : purchase.getDetails()) {
+    	for (PurchaseDetail purchaseDetail : purchaseDetails) {
     		purchaseSubItemSum += purchaseDetail.getSubTotal();
     	}
     	for (ConfirmationDetail confirmationDetail : confirmation.getDetails()) {
@@ -71,23 +75,24 @@ public class ConfirmationServiceTest {
 	 */
     @Test
     public void _02_processConfirmationSet2() throws OrderFullfillmentException {
-       	float purchaseSubItemSum = 0.0f;
+    	float purchaseSubItemSum = 0.0f;
     	float confirmationSubItemSum = 0.0f;
 
     	Confirmation confirmation = ConfirmationTestData.generateConfirmationSet2();
     	Purchase purchase = confirmationService.processConfirmation(confirmation);
+    	List<PurchaseDetail> purchaseDetails = confirmationService.processConfirmationDetail(2, confirmation);
+
     	assertEquals(purchase.getUserId(), confirmation.getUserId());
     	assertEquals(purchase.getTotalAmount(), confirmation.getTotalAmount(), 0.001f);
-    	assertEquals(purchase.getDetails().size(), confirmation.getDetails().size());
+    	assertEquals(purchaseDetails.size(), confirmation.getDetails().size());
 
-    	for (PurchaseDetail purchaseDetail : purchase.getDetails()) {
+    	for (PurchaseDetail purchaseDetail : purchaseDetails) {
     		purchaseSubItemSum += purchaseDetail.getSubTotal();
     	}
     	for (ConfirmationDetail confirmationDetail : confirmation.getDetails()) {
     		confirmationSubItemSum += confirmationDetail.getSubTotal();
     	}
     	assertEquals(purchaseSubItemSum, confirmationSubItemSum, 0.001f);
-
     }
     
     

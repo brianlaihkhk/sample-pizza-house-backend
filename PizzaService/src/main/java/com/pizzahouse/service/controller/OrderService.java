@@ -15,7 +15,10 @@ import com.pizzahouse.service.model.FlattenPizzaSize;
 import com.pizzahouse.service.model.FlattenPizzaTopping;
 import com.pizzahouse.service.model.Order;
 import com.pizzahouse.service.model.OrderDetail;
+import com.pizzahouse.service.security.JwtService;
 import com.pizzahouse.common.model.Response;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pizzahouse.common.config.Connection;
 import com.pizzahouse.common.config.Default;
 import com.pizzahouse.common.connection.HttpConnectionHelper;
@@ -24,20 +27,28 @@ import com.pizzahouse.common.exception.UnauthorizedException;
 
 @Service
 public class OrderService {
+	private static ObjectMapper mapper = new ObjectMapper();
+
 	@Autowired
 	protected org.slf4j.Logger logger;
+	@Autowired
+	protected JwtService jwtService;
+	
 	/**
 	 * Order submittion process to persist Order data in DB 
 	 * @param id User id from the user
 	 * @param order The order supplied by the user, containing the ordered item from front end.
 	 * @return Success with order complete / fail with error message 
+	 * @throws JsonProcessingException 
 	 */
-	public static Response submitOrder (int userId, Order order) throws UnauthorizedException, OrderFullfillmentException {
+	public Response<String> submitOrder (int userId, Order order) throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException {
 	
 		Confirmation confirmation = finalizeOrder(order);
 		confirmation.setUserId(userId);
 		
-		Response response = (new HttpConnectionHelper<Response>()).post(Connection.orderConfirmationServiceHost, confirmation, Response.class);
+		String jwtMessage = jwtService.createJwt(String.valueOf(userId), Connection.serverIssuerName, mapper.writeValueAsString(confirmation), Connection.jwtTtlMilliseconds, Connection.serverJwtSecretKey);
+		
+		Response<String> response = (new HttpConnectionHelper<Response>()).post(Connection.orderConfirmationServiceHost + Connection.orderConfirmationServiceName, jwtMessage, Response.class);
 		
 		return response;
 	}
@@ -48,7 +59,7 @@ public class OrderService {
 	 * @param order The order supplied by the user, containing the ordered item from front end.
 	 * @return Finalized confirmation object which is ready to persist in DB. The object containing the sub-total of each item, grand total of the order, and the item details of each order
 	 */
-	public static Confirmation finalizeOrder (Order order) throws UnauthorizedException, OrderFullfillmentException {
+	public Confirmation finalizeOrder (Order order) throws UnauthorizedException, OrderFullfillmentException {
 
 		Confirmation confirmation = new Confirmation();
 		List<ConfirmationDetail> details = new ArrayList<ConfirmationDetail>();

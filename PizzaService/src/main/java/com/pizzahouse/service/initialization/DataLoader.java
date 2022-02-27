@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.service.database.DatabaseQuery;
 import com.pizzahouse.service.entity.Pizza;
 import com.pizzahouse.service.model.FlattenPizzaSize;
@@ -16,31 +18,33 @@ import com.pizzahouse.service.model.FlattenPizzaTopping;
 
 @Service
 public class DataLoader implements ApplicationRunner {
+	@Autowired
+	protected DatabaseQuery<Pizza> pizzaQuery;
+	
  	public static Map<String, FlattenPizzaSize> pizzaSizeMap = new HashMap<String, FlattenPizzaSize>();
  	public static Map<String, FlattenPizzaTopping> pizzaToppingMap = new HashMap<String, FlattenPizzaTopping>();
 
-    public void run(ApplicationArguments args) {
-//    	System.out.println("DataLoader start");
-//    	DatabaseQuery<Pizza> pizzaQuery = new DatabaseQuery<Pizza>();
-//    	
-//    	List<Pizza> PizzaList = pizzaQuery.selectAll(Pizza.class);
-//    	
-//		for (Pizza pizza : PizzaList) {
-//			FlattenPizzaSize flattenPizzaSize = new FlattenPizzaSize();
-//			flattenPizzaSize.setPizzaSize(pizza.getPizzaSize());
-//			flattenPizzaSize.setPizzaSizeId(pizza.getPizzaSizeId());
-//			flattenPizzaSize.setPizzaType(pizza.getPizzaType());
-//			flattenPizzaSize.setPizzaTypeId(pizza.getPizzaTypeId());
-//			pizzaSizeMap.put(pizza.getPizzaTypeId() + "," + pizza.getPizzaSizeId(), flattenPizzaSize);
-//
-//			FlattenPizzaTopping flattenPizzaTopping = new FlattenPizzaTopping();
-//			flattenPizzaTopping.setPizzaTopping(pizza.getPizzaTopping());
-//			flattenPizzaTopping.setPizzaToppingId(pizza.getPizzaToppingId());
-//			flattenPizzaTopping.setPizzaType(pizza.getPizzaType());
-//			flattenPizzaTopping.setPizzaTypeId(pizza.getPizzaTypeId());
-//			pizzaToppingMap.put(pizza.getPizzaTypeId() + "," + pizza.getPizzaToppingId(), flattenPizzaTopping);
-//
-//		}
+    public void run(ApplicationArguments args) throws DatabaseUnavailableException {
+    	System.out.println("DataLoader start");
+    	
+    	List<Pizza> PizzaList = pizzaQuery.selectAll(Pizza.class);
+    	
+		for (Pizza pizza : PizzaList) {
+			FlattenPizzaSize flattenPizzaSize = new FlattenPizzaSize();
+			flattenPizzaSize.setPizzaSize(pizza.getPizzaSize());
+			flattenPizzaSize.setPizzaSizeId(pizza.getPizzaSizeId());
+			flattenPizzaSize.setPizzaType(pizza.getPizzaType());
+			flattenPizzaSize.setPizzaTypeId(pizza.getPizzaTypeId());
+			pizzaSizeMap.put(pizza.getPizzaTypeId() + "," + pizza.getPizzaSizeId(), flattenPizzaSize);
+
+			FlattenPizzaTopping flattenPizzaTopping = new FlattenPizzaTopping();
+			flattenPizzaTopping.setPizzaTopping(pizza.getPizzaTopping());
+			flattenPizzaTopping.setPizzaToppingId(pizza.getPizzaToppingId());
+			flattenPizzaTopping.setPizzaType(pizza.getPizzaType());
+			flattenPizzaTopping.setPizzaTypeId(pizza.getPizzaTypeId());
+			pizzaToppingMap.put(pizza.getPizzaTypeId() + "," + pizza.getPizzaToppingId(), flattenPizzaTopping);
+
+		}
 		
     	
   /*    DatabaseQuery<FlattenPizzaSize> pizzaSizeQuery = new DatabaseQuery<FlattenPizzaSize>();

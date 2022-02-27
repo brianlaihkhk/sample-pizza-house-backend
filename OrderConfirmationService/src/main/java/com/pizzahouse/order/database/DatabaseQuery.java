@@ -92,7 +92,7 @@ public class DatabaseQuery<T> {
 	 * @param entity Entity to insert
 	 * @return ID of the record (The field which annotates @id specified in the entity)
 	 */
-	public int insert(Object entity) {
+	public int insert(T entity) {
 		logger.debug("Start insert");
 		dbSession.beginTransaction();
 		int id = (Integer) dbSession.save(entity);
@@ -100,6 +100,20 @@ public class DatabaseQuery<T> {
 		return id;
 	}
 	
+	/**
+	 * Insert the entityList to the database
+	 * @param entityList List of entity to insert
+	 * @return ID of the record (The field which annotates @id specified in the entity)
+	 */
+	public boolean insertList(List<T> entityList) {
+		logger.debug("Start insert");
+		dbSession.beginTransaction();
+		for(Object entity : entityList) {
+			int id = (Integer) dbSession.save(entity);
+		}
+		dbSession.getTransaction().commit();
+		return true;
+	}
 	
 	/**
 	 * Insert or update the entity to the database

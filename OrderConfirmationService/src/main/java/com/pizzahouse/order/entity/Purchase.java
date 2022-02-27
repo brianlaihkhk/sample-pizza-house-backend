@@ -1,8 +1,10 @@
 package com.pizzahouse.order.entity;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.CascadeType;
 
 import com.pizzahouse.order.entity.PurchaseDetail;
 
@@ -32,9 +35,13 @@ public class Purchase {
     @Column(name="TOTAL_AMOUNT", scale=2, nullable=false)
 	private float totalAmount;
 
-    @OneToMany
-    @JoinColumn(name="PURCHASE_ID")
-	private List<PurchaseDetail> details;
+    /*
+     * TODO: Unknown error raised by Hibernate ORM when using OneToMany
+     *       Using a work around to split insert of Purchase and PurchaseDetails
+     */
+//    @OneToMany(cascade = {CascadeType.ALL})
+//    @JoinColumn(name="PURCHASE_ID")
+//	private List<PurchaseDetail> details = new ArrayList<PurchaseDetail>();
 
 	@Column(name = "CREATION_TIME", columnDefinition="DATETIME")
 	private Date creationTime;
@@ -66,13 +73,13 @@ public class Purchase {
 		this.totalAmount = totalAmount;
 	}
 
-	public List<PurchaseDetail> getDetails() {
-		return details;
-	}
-
-	public void setDetails(List<PurchaseDetail> details) {
-		this.details = details;
-	}
+//	public List<PurchaseDetail> getDetails() {
+//		return details;
+//	}
+//
+//	public void setDetails(List<PurchaseDetail> details) {
+//		this.details = details;
+//	}
 
 	public Date getCreationTime() {
 		return creationTime;

@@ -7,9 +7,9 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 
 @Suite.SuiteClasses({
+   UserServiceTest.class,
    OrderServiceTest.class,
    IntegrationTest.class,
-   UserServiceTest.class
 })
 
 public class UnitTestSuite {
