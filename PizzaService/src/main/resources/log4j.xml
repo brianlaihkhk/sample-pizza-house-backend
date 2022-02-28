@@ -19,10 +19,10 @@
     </layout>  
     </appender>  -->
         <category name="org.hibernate">  
-            <priority value="DEBUG" />  
+            <priority value="INFO" />  
         </category>  
         <category name="java.sql">  
-            <priority value="debug" />  
+            <priority value="info" />  
         </category>  
         <root>  
             <priority value="INFO" />  
