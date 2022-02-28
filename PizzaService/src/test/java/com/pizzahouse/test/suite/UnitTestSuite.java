@@ -10,6 +10,7 @@ import org.junit.runners.Suite;
    UserServiceTest.class,
    OrderServiceTest.class,
    IntegrationTest.class,
+   PizzaMapTest.class
 })
 
 public class UnitTestSuite {

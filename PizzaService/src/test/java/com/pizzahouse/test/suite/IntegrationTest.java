@@ -14,11 +14,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
+import com.pizzahouse.common.exception.JwtIssuerNotMatchException;
+import com.pizzahouse.common.exception.JwtMessageExpiredException;
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 import com.pizzahouse.common.model.Response;
 import com.pizzahouse.service.controller.OrderService;
 import com.pizzahouse.service.initialization.DataLoader;
+import com.pizzahouse.service.initialization.PropertiesLoader;
 import com.pizzahouse.service.model.Order;
 import com.pizzahouse.test.data.DataLoaderTestData;
 import com.pizzahouse.test.data.OrderTestData;
@@ -31,6 +34,8 @@ public class IntegrationTest {
 	protected OrderService orderService;
 	@Autowired
 	protected Logger logger;
+	@Autowired
+	protected PropertiesLoader propertiesLoader;
 	
 	/**
 	 * Populate data to PizzaSizeMap and PizzaToppingMap
@@ -40,6 +45,19 @@ public class IntegrationTest {
     	DataLoader.pizzaSizeMap = DataLoaderTestData.generatePizzaSizeMapSet1();
     	DataLoader.pizzaToppingMap = DataLoaderTestData.generatePizzaToppingMapSet1();
     }
+
+    /**
+     * 
+     * initialize data
+     * @throws Exception 
+     */
+    @Test
+    public void _00_initialize() throws Exception {
+    	propertiesLoader.setConnectionInputStream(this.getClass().getClassLoader().getResourceAsStream("connection.properties"));
+    	propertiesLoader.setDefaultInputStream(this.getClass().getClassLoader().getResourceAsStream("default.properties"));
+    	propertiesLoader.populate();
+    }
+    
     
 	/**
 	 *   Test the result generated from finalizedOrder
@@ -60,9 +78,11 @@ public class IntegrationTest {
 	 *   Total amount : 2 * (149 + 15 + 15) + 2 * 129 = 616
 	 * @throws JsonProcessingException 
 	 * @throws DatabaseUnavailableException 
+	 * @throws JwtIssuerNotMatchException 
+	 * @throws JwtMessageExpiredException 
 	 */
     @Test
-    public void _01_orderPizzaSet1() throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException, DatabaseUnavailableException {
+    public void _01_orderPizzaSet1() throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException, DatabaseUnavailableException, JwtMessageExpiredException, JwtIssuerNotMatchException {
     	Order order = OrderTestData.generateOrderSet1();
     	Response<String> response = orderService.submitOrder(1, order);
 
@@ -92,9 +112,11 @@ public class IntegrationTest {
 	 *   Total amount : 119 + 20 + 129 + 129 + 99 + 15 + 15 + 25 = 551
 	 * @throws JsonProcessingException 
 	 * @throws DatabaseUnavailableException 
+	 * @throws JwtIssuerNotMatchException 
+	 * @throws JwtMessageExpiredException 
 	 */
     @Test
-    public void _02_orderPizzaSet2() throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException, DatabaseUnavailableException {
+    public void _02_orderPizzaSet2() throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException, DatabaseUnavailableException, JwtMessageExpiredException, JwtIssuerNotMatchException {
     	Order order = OrderTestData.generateOrderSet2();
     	Response<String> response = orderService.submitOrder(2, order);
 

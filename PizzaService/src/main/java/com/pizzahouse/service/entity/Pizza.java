@@ -3,6 +3,7 @@ package com.pizzahouse.service.entity;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,57 +19,25 @@ import javax.persistence.Table;
 import com.pizzahouse.service.entity.key.CompositePizzaKey;
 
 @Entity
-@IdClass(CompositePizzaKey.class)
+// @IdClass(CompositePizzaKey.class)
 @Table(name="PIZZA")
 public class Pizza {
 
-	@Id
-	@Column(name="PIZZA_TYPE_ID")
-	private int pizzaTypeId;
-
-	@Id
-	@Column(name="PIZZA_SIZE_ID")
-	private int pizzaSizeId;
-	
-	@Id
-	@Column(name="PIZZA_TOPPING_ID")
-	private int pizzaToppingId;
+	@EmbeddedId
+	CompositePizzaKey key;
 	
 	@OneToOne
-    @JoinColumn(name = "pizzaTypeId")
+    @JoinColumn(name = "PIZZA_TYPE_ID", insertable=false, updatable=false)
 	private PizzaType pizzaType;
     
 	@OneToOne
-    @JoinColumn(name = "pizzaSizeId")
+    @JoinColumn(name = "PIZZA_SIZE_ID", insertable=false, updatable=false)
 	private PizzaSize pizzaSize;
     
 	@OneToOne
-    @JoinColumn(name = "pizzaToppingId")
+    @JoinColumn(name = "PIZZA_TOPPING_ID", insertable=false, updatable=false)
 	private PizzaTopping pizzaTopping;
 
-	public int getPizzaTypeId() {
-		return pizzaTypeId;
-	}
-
-	public void setPizzaTypeId(int pizzaTypeId) {
-		this.pizzaTypeId = pizzaTypeId;
-	}
-
-	public int getPizzaSizeId() {
-		return pizzaSizeId;
-	}
-
-	public void setPizzaSizeId(int pizzaSizeId) {
-		this.pizzaSizeId = pizzaSizeId;
-	}
-
-	public int getPizzaToppingId() {
-		return pizzaToppingId;
-	}
-
-	public void setPizzaToppingId(int pizzaToppingId) {
-		this.pizzaToppingId = pizzaToppingId;
-	}
 
 	public PizzaType getPizzaType() {
 		return pizzaType;

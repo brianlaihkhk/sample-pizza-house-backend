@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 import com.pizzahouse.common.exception.UserProfileException;
+import com.pizzahouse.service.initialization.PropertiesLoader;
 import com.pizzahouse.service.initialization.WebConfiguration;
 import com.pizzahouse.service.security.SecurityService;
 import com.pizzahouse.test.data.UserTestData;
@@ -41,12 +42,17 @@ public class UserServiceTest {
 	protected SecurityService securityService;
 	@Autowired
 	protected Logger logger;
+	@Autowired
+	protected PropertiesLoader propertiesLoader;
 	
 	/**
 	 * Validate DB connection has been established before UserService Test
 	 */
     @Test
-    public void _00_initialize() {
+    public void _00_initialize() throws Exception {
+    	propertiesLoader.setConnectionInputStream(this.getClass().getClassLoader().getResourceAsStream("connection.properties"));
+    	propertiesLoader.setDefaultInputStream(this.getClass().getClassLoader().getResourceAsStream("default.properties"));
+    	propertiesLoader.populate();
     	assertEquals(true, userQuery.checkConnection());
     }
     

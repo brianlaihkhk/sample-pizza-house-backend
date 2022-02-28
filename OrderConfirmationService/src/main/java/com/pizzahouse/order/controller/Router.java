@@ -44,20 +44,24 @@ public class Router extends SpringBootServletInitializer {
 	 * @param confirmation Order confrmation request from PizzaService
 	 * @return Success with order confirmation / fail with error message
 	 */
-	@RequestMapping(value = "confirm", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "confirm", method = RequestMethod.POST, produces = "text/plain")
 	@ResponseBody
-	public Response<String> submitOrder (String jwtMessage) {
+	public String submitOrder (String jwtMessage) {
 		Response<String> response = new Response<String>();
 		ErrorDetail error = new ErrorDetail();
+		Confirmation confirmation = new Confirmation();
+		String jsonResponse = "";
 		
 		try {
 			logger.info("calling OrderConfirmation /confirm endpoint : " + jwtMessage);
 
-			Confirmation confirmation = jwtService.decodeMessage(Confirmation.class, jwtMessage);
+			confirmation = jwtService.decodeMessage(Confirmation.class, jwtMessage);
 			logger.info("decode jwt message : " + mapper.writeValueAsString(confirmation));
 
 			response = confirmationService.confirmOrder(confirmation);
-			logger.info("Finish calling OrderConfirmation /confirm endpoint : " + mapper.writeValueAsString(response));
+			jsonResponse = mapper.writeValueAsString(response);
+			
+			logger.info("Finish calling OrderConfirmation /confirm endpoint, wrapping using Jwt : " + mapper.writeValueAsString(response));
 		} catch(JsonMappingException e) {
 			error.setErrorCode(ErrorCode.jsonMappingException);
 			error.setErrorMessage(e.getMessage());
@@ -112,7 +116,10 @@ public class Router extends SpringBootServletInitializer {
 			logger.error("[Exception] Unknown error occured : " + e.getMessage());
 		}
 		
-		return response;
+		String jwtResponseMessage = jwtService.createJwt(String.valueOf(confirmation.getUserId()), Connection.serverIssuerName, jsonResponse, Connection.jwtTtlMilliseconds, Connection.serverJwtSecretKey);
+		logger.info("Finish calling OrderConfirmation /confirm endpoint : ");
+
+		return jwtResponseMessage;
 	}
 
     public static void main(String[] args) {

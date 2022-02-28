@@ -28,28 +28,31 @@ public class DataLoader implements ApplicationRunner {
  	public static Map<String, FlattenPizzaTopping> pizzaToppingMap = new HashMap<String, FlattenPizzaTopping>();
 
     public void run(ApplicationArguments args) throws DatabaseUnavailableException {
-    	System.out.println("DataLoader start");
+    	logger.info("DataLoader start");
     	
-    	List<Pizza> PizzaList = pizzaQuery.selectAll(Pizza.class);
+    	List<Pizza> pizzaList = pizzaQuery.selectAll(Pizza.class);
     	
-		for (Pizza pizza : PizzaList) {
+    	System.out.println(pizzaList.size());
+    	
+		for (Pizza pizza : pizzaList) {
 			FlattenPizzaSize flattenPizzaSize = new FlattenPizzaSize();
 			flattenPizzaSize.setPizzaSize(pizza.getPizzaSize());
-			flattenPizzaSize.setPizzaSizeId(pizza.getPizzaSizeId());
+			flattenPizzaSize.setPizzaSizeId(pizza.getPizzaSize().getSizeId());
 			flattenPizzaSize.setPizzaType(pizza.getPizzaType());
-			flattenPizzaSize.setPizzaTypeId(pizza.getPizzaTypeId());
-			pizzaSizeMap.put(pizza.getPizzaTypeId() + "," + pizza.getPizzaSizeId(), flattenPizzaSize);
+			flattenPizzaSize.setPizzaTypeId(pizza.getPizzaType().getTypeId());
+			pizzaSizeMap.put(pizza.getPizzaType().getTypeId() + "," + pizza.getPizzaSize().getSizeId(), flattenPizzaSize);
 
 			FlattenPizzaTopping flattenPizzaTopping = new FlattenPizzaTopping();
 			flattenPizzaTopping.setPizzaTopping(pizza.getPizzaTopping());
-			flattenPizzaTopping.setPizzaToppingId(pizza.getPizzaToppingId());
+			flattenPizzaTopping.setPizzaToppingId(pizza.getPizzaTopping().getToppingId());
 			flattenPizzaTopping.setPizzaType(pizza.getPizzaType());
-			flattenPizzaTopping.setPizzaTypeId(pizza.getPizzaTypeId());
-			pizzaToppingMap.put(pizza.getPizzaTypeId() + "," + pizza.getPizzaToppingId(), flattenPizzaTopping);
+			flattenPizzaTopping.setPizzaTypeId(pizza.getPizzaType().getTypeId());
+			pizzaToppingMap.put(pizza.getPizzaType().getTypeId() + "," + pizza.getPizzaTopping().getToppingId(), flattenPizzaTopping);
 
 		}
 		
-    	
+    	logger.info("DataLoader end");
+
   /*    DatabaseQuery<FlattenPizzaSize> pizzaSizeQuery = new DatabaseQuery<FlattenPizzaSize>();
     	DatabaseQuery<FlattenPizzaTopping> pizzaToppingQuery = new DatabaseQuery<FlattenPizzaTopping>();
     	
@@ -67,6 +70,4 @@ public class DataLoader implements ApplicationRunner {
 		} */
     }
     
-    
-
 }
