@@ -14,4 +14,4 @@ Coding assessment - Pizza House - Submitted by Brian Lai (brianlaihkhk@gmail.com
 - Setup : Setup script for database initialization
 - OrderConfirmationService : Java module in saving confirmed orders
 - Common : Java module for common library
-- Deploy
+- Deploy : Deployment script for maven and docker
