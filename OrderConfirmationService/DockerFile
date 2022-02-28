@@ -8,3 +8,5 @@ WORKDIR /tmp
 ENTRYPOINT ["java", "-jar", "OrderConfirmationService-jar-with-dependencies.jar"]
 
 
+   PRIMARY KEY (PURCHASE_ID),
+   FOREIGN KEY (USER_ID) REFERENCES USER(USER_ID)

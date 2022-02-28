@@ -23,6 +23,8 @@ import com.pizzahouse.common.config.Connection;
 import com.pizzahouse.common.config.Default;
 import com.pizzahouse.common.connection.HttpConnectionHelper;
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
+import com.pizzahouse.common.exception.JwtIssuerNotMatchException;
+import com.pizzahouse.common.exception.JwtMessageExpiredException;
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 
@@ -44,16 +46,19 @@ public class OrderService {
 	 * @return Success with order complete / fail with error message 
 	 * @throws JsonProcessingException 
 	 * @throws DatabaseUnavailableException 
+	 * @throws JwtIssuerNotMatchException 
+	 * @throws JwtMessageExpiredException 
 	 */
-	public Response<String> submitOrder (int userId, Order order) throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException, DatabaseUnavailableException {
+	public Response<String> submitOrder (int userId, Order order) throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException, DatabaseUnavailableException, JwtMessageExpiredException, JwtIssuerNotMatchException {
 	
 		Confirmation confirmation = finalizeOrder(order);
 		confirmation.setUserId(userId);
 		
 		String jwtMessage = jwtService.createJwt(String.valueOf(userId), Connection.serverIssuerName, mapper.writeValueAsString(confirmation), Connection.jwtTtlMilliseconds, Connection.serverJwtSecretKey);
 		
-		Response<String> response = (new HttpConnectionHelper<Response>()).post(Connection.orderConfirmationServiceHost + Connection.orderConfirmationServiceName, jwtMessage, Response.class);
+		String jwtResponse = (new HttpConnectionHelper<String>()).post(Connection.orderConfirmationServiceHost + Connection.orderConfirmationServiceName, jwtMessage, String.class);
 		
+		Response<String> response = (Response<String>) jwtService.decodeMessage(Response.class, jwtMessage);
 		return response;
 	}
 	

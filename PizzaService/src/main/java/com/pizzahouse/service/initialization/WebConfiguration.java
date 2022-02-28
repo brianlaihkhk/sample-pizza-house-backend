@@ -24,7 +24,7 @@ public class WebConfiguration{
 
 	@Bean
     public org.slf4j.Logger produceLogger(InjectionPoint injectionPoint) {
-    	System.out.println("produceLogger");
+    	System.out.println("produceLogger start");
         Class<?> classOnWired = injectionPoint.getMember().getDeclaringClass();
     	System.out.println("produceLogger Finish");
         return LoggerFactory.getLogger(classOnWired);
@@ -33,10 +33,12 @@ public class WebConfiguration{
 
     @Bean
     public Session produceDbConnection() {
-    	System.out.println("produceDbConnection");
+    	System.out.println("produceDbConnection start");
     	if (sessionFactory == null) {
     		sessionFactory = generateSessionFactory();
     	}
+    	
+    	System.out.println("produceDbConnection finish");
         return sessionFactory.openSession();
     }
     

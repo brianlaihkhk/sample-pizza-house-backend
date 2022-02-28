@@ -19,6 +19,7 @@ import com.pizzahouse.common.exception.UnauthorizedException;
 import com.pizzahouse.common.model.Confirmation;
 import com.pizzahouse.service.controller.OrderService;
 import com.pizzahouse.service.initialization.DataLoader;
+import com.pizzahouse.service.initialization.PropertiesLoader;
 import com.pizzahouse.service.model.Order;
 import com.pizzahouse.test.data.DataLoaderTestData;
 import com.pizzahouse.test.data.OrderTestData;
@@ -32,6 +33,8 @@ public class OrderServiceTest {
 	protected OrderService orderService;
 	@Autowired
 	protected Logger logger;
+	@Autowired
+	protected PropertiesLoader propertiesLoader;
 
 	/**
 	 * Populate data to PizzaSizeMap and PizzaToppingMap
@@ -40,6 +43,18 @@ public class OrderServiceTest {
     public static void instantiate() {
     	DataLoader.pizzaSizeMap = DataLoaderTestData.generatePizzaSizeMapSet1();
     	DataLoader.pizzaToppingMap = DataLoaderTestData.generatePizzaToppingMapSet1();
+    }
+
+    /**
+     * 
+     * initialize data
+     * @throws Exception 
+     */
+    @Test
+    public void _00_initialize() throws Exception {
+    	propertiesLoader.setConnectionInputStream(this.getClass().getClassLoader().getResourceAsStream("connection.properties"));
+    	propertiesLoader.setDefaultInputStream(this.getClass().getClassLoader().getResourceAsStream("default.properties"));
+    	propertiesLoader.populate();
     }
     
 	/**
