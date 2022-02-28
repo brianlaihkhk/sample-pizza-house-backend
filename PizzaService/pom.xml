@@ -4,7 +4,7 @@
   <groupId>com.pizzahouse</groupId>
   <artifactId>PizzaService</artifactId>
   <packaging>war</packaging>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.2-SNAPSHOT</version>
   <name>Proxy Maven Webapp</name>
   <url>http://maven.apache.org</url>
     <parent>
@@ -117,7 +117,22 @@
 <build>
     <finalName>PizzaService</finalName>
     <plugins>
-
+		 <plugin>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-maven-plugin</artifactId>
+		    <configuration>
+        		<mainClass>com.pizzahouse.service.controller.Router</mainClass>
+   			 </configuration>
+		        <executions>
+		            <execution>
+		                <goals>
+		                    <goal>repackage</goal>
+		                </goals>
+		            </execution>
+		       </executions>
+		
+		</plugin>
+		
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-assembly-plugin</artifactId>
