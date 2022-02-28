@@ -3,7 +3,7 @@ Coding assessment - Pizza House - Submitted by Brian Lai (brianlaihkhk@gmail.com
 
 ### Features
 
-- Framework used : Hibername orm, Persistance framework, Spring MVC, slf4j, jax-rs
+- Framework used : Hibernate orm, Persistance framework, Spring MVC, slf4j, jax-rs
 - JWT encrypto between services
 
 ### Folder
