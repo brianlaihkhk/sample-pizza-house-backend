@@ -22,6 +22,7 @@ import com.pizzahouse.service.entity.User;
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 import com.pizzahouse.common.exception.UserProfileException;
+import org.apache.commons.lang.SerializationUtils;
 
 @Service
 public class SecurityService {
@@ -125,14 +126,16 @@ public class SecurityService {
 		long epoch = (System.currentTimeMillis() / 1000);
 		String token = generateToken();
 		Session session = sessionQuery.selectById(Session.class, userId);
+		
 		logger.debug(session.toString());
 		if (session != null && session.getToken().length() > 0) {
 			session.setToken(token);
 			sessionQuery.insertOrUpdate(session);
 		} else {
-			createSession(userId);
+			session = createSession(userId);
 		}
-		return session;
+		return (Session) SerializationUtils.clone(session);
+
 	}
 	
 	/**
@@ -149,7 +152,7 @@ public class SecurityService {
 		session.setToken(token);
 		session.setUserId(userId);
 		sessionQuery.insert(session);
-		return session;
+		return (Session) SerializationUtils.clone(session);
 	}
 	
 	/**

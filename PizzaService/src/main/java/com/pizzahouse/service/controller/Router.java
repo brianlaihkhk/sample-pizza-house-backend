@@ -11,17 +11,22 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pizzahouse.common.model.ErrorDetail;
 import com.pizzahouse.service.entity.Session;
 import com.pizzahouse.service.model.Order;
+import com.pizzahouse.service.model.RequestUserCreate;
+import com.pizzahouse.service.model.RequestUserLogin;
 import com.pizzahouse.service.security.SecurityService;
 import com.pizzahouse.common.model.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.pizzahouse.common.config.Default;
 import com.pizzahouse.common.config.ErrorCode;
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
@@ -36,6 +41,7 @@ import com.pizzahouse.common.exception.UserProfileException;
 public class Router extends SpringBootServletInitializer {
 	
 	private ObjectMapper mapper = new ObjectMapper();
+	
 	@Autowired
 	protected org.slf4j.Logger logger;
 	@Autowired
@@ -55,17 +61,18 @@ public class Router extends SpringBootServletInitializer {
 	 */
 	@RequestMapping(value = "login", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Response<Session> getSessionByUsername (String username, String password) {
+	public Response<Session> getSessionByUsername (@RequestBody RequestUserLogin requestUserLogin) {
+		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 		Response<Session> response = new Response<Session>();
 		ErrorDetail error = new ErrorDetail();
 		
 		try {
-			logger.info("calling PizzaHouse /login endpoint : " + username);
-			if (username == null || password == null) {
+			logger.info("calling PizzaHouse /login endpoint : " + requestUserLogin.getUsername());
+			if (requestUserLogin.getUsername() == null || requestUserLogin.getPassword() == null) {
 				throw new UserProfileException("Required parameter cannot be empty");
 			}
 			
-			response = userService.userLogin(username, password);
+			response = userService.userLogin(requestUserLogin.getUsername(), requestUserLogin.getPassword());
 			logger.info("Finish calling PizzaHouse /login endpoint : " + mapper.writeValueAsString(response));
 		} catch(RollbackException e) {
 			error.setErrorCode(ErrorCode.rollbackException);
@@ -95,6 +102,14 @@ public class Router extends SpringBootServletInitializer {
 			response.setSuccess(false);
 			response.setError(error);
 			logger.warn("[NoSuchAlgorithmException] Database error, transaction has been rejected and rolled back : " + e.getMessage());
+		} catch(UnauthorizedException e) {
+			error.setErrorCode(ErrorCode.unauthorizedException);
+			error.setErrorMessage("Unauthorized action");
+			
+			response.setSuccess(false);
+			response.setError(error);
+			logger.warn("[UnauthorizedException] Unauthorized action : " + e.getMessage());
+
 		} catch(Exception e) {
 			error.setErrorCode(ErrorCode.baseException);
 			error.setErrorMessage("Unknown error occured, please try again later");
@@ -115,18 +130,18 @@ public class Router extends SpringBootServletInitializer {
 	 */
 	@RequestMapping(value = "create", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Response<Session> createUser (String username, String firstName, String lastName, String password) {
+	public Response<Session> createUser (@RequestBody RequestUserCreate requestUserCreate) {
 		
 		Response<Session> response = new Response<Session>();
 		ErrorDetail error = new ErrorDetail();
 		
 		try {
-			logger.info("calling PizzaHouse /create endpoint : " + username);
-			if (username == null || firstName == null || lastName == null || password == null) {
+			logger.info("calling PizzaHouse /create endpoint : " + requestUserCreate.getUsername());
+			if (requestUserCreate.getUsername() == null || requestUserCreate.getFirstName() == null || requestUserCreate.getFirstName() == null || requestUserCreate.getPassword() == null) {
 				throw new UserProfileException("Required parameter cannot be empty");
 			}
 			
-			response = userService.createUser(username, firstName, lastName, password);
+			response = userService.createUser(requestUserCreate.getUsername(), requestUserCreate.getFirstName(), requestUserCreate.getLastName(), requestUserCreate.getPassword());
 			logger.info("Finish calling PizzaHouse /create endpoint : " + mapper.writeValueAsString(response));
 		} catch(RollbackException e) {
 			error.setErrorCode(ErrorCode.rollbackException);
@@ -177,19 +192,19 @@ public class Router extends SpringBootServletInitializer {
 	 */
 	@RequestMapping(value = "order", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Response<String> submitOrder (int userId, String sessionToken, Order order) {
+	public Response<String> submitOrder (@RequestBody Order order) {
 
 		Response<String> response = new Response<String>();
 		ErrorDetail error = new ErrorDetail();
 		
 		try {
-			logger.info("calling PizzaHouse /order endpoint : " + userId);
-			if (sessionToken == null || order == null) {
+			logger.info("calling PizzaHouse /order endpoint : " + order.getUserId());
+			if (order == null || order.getSession() == null) {
 				throw new OrderFullfillmentException("Required parameter cannot be empty");
 			}
 			
-			securityService.checkUserTokenByUserId(userId, sessionToken, Default.sessionTokenExpirationDays);
-			response = orderService.submitOrder(userId, order);
+			securityService.checkUserTokenByUserId(order.getUserId(), order.getSession(), Default.sessionTokenExpirationDays);
+			response = orderService.submitOrder(order.getUserId(), order);
 			logger.info("Finish calling PizzaHouse /order endpoint : " + mapper.writeValueAsString(response));
 		} catch(RollbackException e) {
 			error.setErrorCode(ErrorCode.rollbackException);
@@ -231,18 +246,18 @@ public class Router extends SpringBootServletInitializer {
 		return response;
 	}
 	
-	@RequestMapping(value = "test", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public Response<Session> test () throws NoSuchAlgorithmException, UserProfileException {
-
-		logger.info("calling PizzaHouse /test endpoint");
-		long epoch = (System.currentTimeMillis() / 1000); 
-		String james = "james" + String.valueOf(epoch);
-
-    	Response<Session> jamesResponse = userService.createUser(james, "james", "james", "ames");
-    	return jamesResponse;
-	}
-	
+//	@RequestMapping(value = "test", method = RequestMethod.GET, produces = "application/json")
+//	@ResponseBody
+//	public Response<Session> test () throws NoSuchAlgorithmException, UserProfileException {
+//
+//		logger.info("calling PizzaHouse /test endpoint");
+//		long epoch = (System.currentTimeMillis() / 1000); 
+//		String james = "james" + String.valueOf(epoch);
+//
+//    	Response<Session> jamesResponse = userService.createUser(james, "james", "james", "ames");
+//    	return jamesResponse;
+//	}
+//	
 
     public static void main(String[] args) {
     	System.out.println("WebConfiguration run init");

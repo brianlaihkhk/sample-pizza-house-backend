@@ -7,7 +7,7 @@ import com.pizzahouse.service.model.OrderDetail;
 public class Order {
 
 	private int userId;
-	private int session;
+	private String session;
 	private List<OrderDetail> details;
 	
 	public int getUserId() {
@@ -16,10 +16,10 @@ public class Order {
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
-	public int getSession() {
+	public String getSession() {
 		return session;
 	}
-	public void setSession(int session) {
+	public void setSession(String session) {
 		this.session = session;
 	}
 

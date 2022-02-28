@@ -1,5 +1,6 @@
 package com.pizzahouse.service.entity;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 import javax.persistence.Column;
@@ -9,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="SESSION")
-public class Session {
+public class Session implements Serializable {
 
 	@Id
 	@Column(name="USER_ID", nullable=false)
