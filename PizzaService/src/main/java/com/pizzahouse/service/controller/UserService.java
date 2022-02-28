@@ -41,7 +41,7 @@ public class UserService {
 		logger.debug(user.getPassword());
 
 		if (user != null && user.getPassword() != null) {
-			if (user.getPassword() != password) {
+			if (!user.getPassword().equals(password)) {
 				throw new UnauthorizedException("Invalid password for user");
 			}
 			response.setSuccess(true);

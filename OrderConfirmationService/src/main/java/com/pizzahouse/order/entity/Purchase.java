@@ -18,8 +18,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.CascadeType;
 
-import com.pizzahouse.order.entity.PurchaseDetail;
-
 @Entity
 @Table(name="PURCHASE")
 public class Purchase {

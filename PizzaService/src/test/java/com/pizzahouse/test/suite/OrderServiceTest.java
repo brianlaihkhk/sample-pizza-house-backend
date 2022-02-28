@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.exception.UnauthorizedException;
@@ -35,6 +37,7 @@ public class OrderServiceTest {
 	protected Logger logger;
 	@Autowired
 	protected PropertiesLoader propertiesLoader;
+	private ObjectMapper objectMapper = new ObjectMapper();
 
 	/**
 	 * Populate data to PizzaSizeMap and PizzaToppingMap
@@ -115,6 +118,7 @@ public class OrderServiceTest {
     @Test
     public void _03_orderPizzaSet1() throws UnauthorizedException, OrderFullfillmentException, DatabaseUnavailableException {
     	Order order = OrderTestData.generateOrderSet1();
+
     	Confirmation confirmation = orderService.finalizeOrder(order);
 
     	assertEquals(4, confirmation.getDetails().size());

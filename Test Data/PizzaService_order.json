@@ -1,0 +1,21 @@
+{
+    "userId": XXXXXXXXXXX,
+    "session": "XXXXXXXXXXXXXXXXXX",
+    "details": [
+      {
+        "pizzaTypeId": 1,
+        "pizzaSizeId": 4,
+        "pizzaToppingIdList": [
+          1,
+          2
+        ],
+        "quantity": 2
+      },
+      {
+        "pizzaTypeId": 3,
+        "pizzaSizeId": 2,
+        "pizzaToppingIdList": [],
+        "quantity": 2
+      }
+    ]
+  }

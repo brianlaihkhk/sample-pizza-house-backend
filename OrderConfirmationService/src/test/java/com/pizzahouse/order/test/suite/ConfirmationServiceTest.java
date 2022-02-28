@@ -21,6 +21,7 @@ import com.pizzahouse.order.controller.ConfirmationService;
 import com.pizzahouse.order.database.DatabaseQuery;
 import com.pizzahouse.order.entity.Purchase;
 import com.pizzahouse.order.entity.PurchaseDetail;
+import com.pizzahouse.order.initialization.PropertiesLoader;
 import com.pizzahouse.test.data.ConfirmationTestData;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -33,12 +34,17 @@ public class ConfirmationServiceTest {
 	protected ConfirmationService confirmationService;
 	@Autowired
 	protected Logger logger;
+	@Autowired
+	protected PropertiesLoader propertiesLoader;
 	
 	/**
 	 * Validate DB connection has been established before ConfirmationService Test
 	 */
     @Test
-    public void _00_initialize() {
+    public void _00_initialize() throws Exception {
+    	propertiesLoader.setConnectionInputStream(this.getClass().getClassLoader().getResourceAsStream("connection.properties"));
+    	propertiesLoader.setDefaultInputStream(this.getClass().getClassLoader().getResourceAsStream("default.properties"));
+    	propertiesLoader.populate();
     	assertEquals(true, purchaseQuery.checkConnection());
     }
     

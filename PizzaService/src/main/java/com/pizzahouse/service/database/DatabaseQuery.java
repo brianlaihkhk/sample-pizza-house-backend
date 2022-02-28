@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
 
+import javax.persistence.RollbackException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -21,7 +22,6 @@ public class DatabaseQuery<T> {
 	@Autowired
 	protected org.slf4j.Logger logger;
 
-	
 	/**
 	 * Check the DB connection is established or not
 	 * @return CriteriaBuilder object
@@ -51,11 +51,16 @@ public class DatabaseQuery<T> {
 	 * @return List of generic T object specified from creation
 	 */
 	public List<T> query(CriteriaQuery<T> query) {
-		logger.debug("Start query");
-		dbSession.beginTransaction();
-		List<T> result = dbSession.createQuery(query).getResultList();
-		dbSession.getTransaction().commit();
-		return result;
+		try {
+			logger.debug("Start query");
+			dbSession.beginTransaction();
+			List<T> result = dbSession.createQuery(query).getResultList();
+			dbSession.getTransaction().commit();
+			return result;
+		} catch (Exception e) {
+			dbSession.getTransaction().rollback();
+			throw new RollbackException("Database transaction rolled back " + e.getMessage());
+		}
 	}	
 	
 	/**
@@ -65,11 +70,16 @@ public class DatabaseQuery<T> {
 	 * @return Generic T object specified from creation
 	 */
 	public T selectById(Class<T> clazz, int id){
-		logger.debug("Start select by id");
-		dbSession.beginTransaction();
-		T result = (T) dbSession.get(clazz, id);
-		dbSession.getTransaction().commit();
-		return result;
+		try {
+			logger.debug("Start select by id");
+			dbSession.beginTransaction();
+			T result = (T) dbSession.load(clazz, id);
+			dbSession.getTransaction().commit();
+			return result;
+		} catch (Exception e) {
+			dbSession.getTransaction().rollback();
+			throw new RollbackException("Database transaction rolled back " + e.getMessage());
+		}
 	}
 
 	/**
@@ -79,11 +89,19 @@ public class DatabaseQuery<T> {
 	 * @throws DatabaseUnavailableException 
 	 */
 	public List<T> selectAll(Class<T> clazz) throws DatabaseUnavailableException{
-		logger.debug("Start select all");
-		CriteriaQuery<T> cq = getCriteriaBuilder().createQuery(clazz);
-		Root<T> root = cq.from(clazz);
-		CriteriaQuery<T> query = cq.select(root);
-		return query(query);
+		try {
+			logger.debug("Start select all");
+			CriteriaQuery<T> cq = getCriteriaBuilder().createQuery(clazz);
+			Root<T> root = cq.from(clazz);
+			CriteriaQuery<T> query = cq.select(root);
+			return query(query);
+		} catch (DatabaseUnavailableException e) {
+			dbSession.getTransaction().rollback();
+			throw new DatabaseUnavailableException("Database transaction rolled back " + e.getMessage());
+		} catch (Exception e) {
+			dbSession.getTransaction().rollback();
+			throw new RollbackException("Database transaction rolled back " + e.getMessage());
+		}
 	}
 
 
@@ -93,14 +111,38 @@ public class DatabaseQuery<T> {
 	 * @param entity Entity to insert
 	 * @return ID of the record (The field which annotates @id specified in the entity)
 	 */
-	public int insert(Object entity) {
-		logger.debug("Start insert");
-		dbSession.beginTransaction();
-		int id = (Integer) dbSession.save(entity);
-		dbSession.getTransaction().commit();
-		return id;
+	public int insert(T entity) {
+		try {
+			logger.debug("Start insert");
+			dbSession.beginTransaction();
+			int id = (Integer) dbSession.save(entity);
+			dbSession.getTransaction().commit();
+			return id;
+		} catch (Exception e) {
+			dbSession.getTransaction().rollback();
+			throw new RollbackException("Database transaction rolled back " + e.getMessage());
+		}
 	}
 	
+	/**
+	 * Insert the entityList to the database
+	 * @param entityList List of entity to insert
+	 * @return ID of the record (The field which annotates @id specified in the entity)
+	 */
+	public boolean insertList(List<T> entityList) {
+		try {
+			logger.debug("Start insert");
+			dbSession.beginTransaction();
+			for(Object entity : entityList) {
+				int id = (Integer) dbSession.save(entity);
+			}
+			dbSession.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			dbSession.getTransaction().rollback();
+			throw new RollbackException("Database transaction rolled back " + e.getMessage());
+		}
+	}
 	
 	/**
 	 * Insert or update the entity to the database
@@ -108,11 +150,16 @@ public class DatabaseQuery<T> {
 	 * @return True if the entity is updated or inserted
 	 */	
 	public boolean insertOrUpdate(Object entity) {
-		logger.debug("Start insert or update");
-		dbSession.beginTransaction();
-		dbSession.saveOrUpdate(entity);
-		dbSession.getTransaction().commit();
-		return true;
+		try {
+			logger.debug("Start insert or update");
+			dbSession.beginTransaction();
+			dbSession.saveOrUpdate(entity);
+			dbSession.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			dbSession.getTransaction().rollback();
+			throw new RollbackException("Database transaction rolled back " + e.getMessage());
+		}
 	}
 
 	
@@ -122,11 +169,16 @@ public class DatabaseQuery<T> {
 	 * @return True if the database record in deleted
 	 */	
 	public boolean delete(Object entity) {
-		logger.debug("Start delete");
-
-		dbSession.beginTransaction();
-		dbSession.delete(entity);
-		dbSession.getTransaction().commit();
-		return true;
+		try {
+			logger.debug("Start delete");
+	
+			dbSession.beginTransaction();
+			dbSession.delete(entity);
+			dbSession.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			dbSession.getTransaction().rollback();
+			throw new RollbackException("Database transaction rolled back " + e.getMessage());
+		}
 	}
 }
