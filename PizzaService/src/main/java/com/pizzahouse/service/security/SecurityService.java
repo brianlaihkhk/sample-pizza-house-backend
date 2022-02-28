@@ -57,7 +57,7 @@ public class SecurityService {
 		
 		Session session = getSession(userId);
 				
-		if (session != null && session.getToken().equals(sessionToken)) {
+		if (session != null && sessionToken != null && session.getToken().equals(sessionToken)) {
 			if (session.getCreationEpochTime() < epochValidTime) {
 				throw new UnauthorizedException("Token expired, unauthorized action");
 			}

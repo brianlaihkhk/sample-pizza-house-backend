@@ -17,7 +17,10 @@ public class UserTestData {
 	public static Session janetSession = null;
 	public static Session annaSession = null;
 	public static Session peterSession = null;
-
+	public static int jamesUserId = 0;
+	public static int janetUserId = 0;
+	public static int annaUserId = 0;
+	public static int peterUserId = 0;
 
 
 }
