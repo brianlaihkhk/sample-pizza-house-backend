@@ -1,0 +1,53 @@
+swagger: '2.0'
+info:
+  description: |
+    This is a sample Petstore server.  You can find 
+    out more about Swagger at 
+    [http://swagger.io](http://swagger.io) or on 
+    [irc.freenode.net, #swagger](http://swagger.io/irc/).
+  version: 1.0.0
+  title: PizzaHouse OrderConfirmationService
+  contact:
+    email: brianlaihkhk@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+# host: petstore.swagger.io
+# basePath: /v2
+tags:
+- name: order
+  description: Order Related endpoint
+
+
+# schemes:
+# - http
+paths:
+  /confirm:
+    post:
+      tags:
+      - order
+      summary: Order confirmation
+      operationId: submitOrderConfirmation
+      consumes:
+      - text/plain
+      produces:
+      - text/plain
+      parameters:
+      - name: jwtString
+        in: query
+        description: Jwt encoded string
+        required: true
+        type: string
+      responses:
+        200:
+          description: Jwt encoded string
+
+      description: Create new user
+
+          
+
+# Added by API Auto Mocking Plugin
+basePath: /OrderConfirmationService/
+schemes:
+ - https
+ - http

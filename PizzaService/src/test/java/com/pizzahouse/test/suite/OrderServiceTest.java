@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 import com.pizzahouse.common.model.Confirmation;
@@ -94,9 +95,10 @@ public class OrderServiceTest {
 	 *   
 	 *   Total record : 4
 	 *   Total amount : 2 * (149 + 15 + 15) + 2 * 129 = 616
+	 * @throws DatabaseUnavailableException 
 	 */
     @Test
-    public void _03_orderPizzaSet1() throws UnauthorizedException, OrderFullfillmentException {
+    public void _03_orderPizzaSet1() throws UnauthorizedException, OrderFullfillmentException, DatabaseUnavailableException {
     	Order order = OrderTestData.generateOrderSet1();
     	Confirmation confirmation = orderService.finalizeOrder(order);
 
@@ -125,9 +127,10 @@ public class OrderServiceTest {
 	 *   
 	 *   Total record : 7
 	 *   Total amount : 119 + 20 + 129 + 129 + 99 + 15 + 15 + 25 = 551
+	 * @throws DatabaseUnavailableException 
 	 */
     @Test
-    public void _04_orderPizzaSet2() throws UnauthorizedException, OrderFullfillmentException {
+    public void _04_orderPizzaSet2() throws UnauthorizedException, OrderFullfillmentException, DatabaseUnavailableException {
     	Order order = OrderTestData.generateOrderSet2();
     	Confirmation confirmation = orderService.finalizeOrder(order);
     	
@@ -148,9 +151,10 @@ public class OrderServiceTest {
 	 *   Throw Exception
 	 *   
 	 *   No order will be processed since neither Square Regular Chicago Pizza nor Chicago Pizza with Goat Cheese Topping is not on sale
+	 * @throws DatabaseUnavailableException 
 	 */
     @Test(expected = OrderFullfillmentException.class)
-    public void _05_orderPizzaSet3() throws UnauthorizedException, OrderFullfillmentException {
+    public void _05_orderPizzaSet3() throws UnauthorizedException, OrderFullfillmentException, DatabaseUnavailableException {
     	Order order = OrderTestData.generateOrderSet3();
     	orderService.finalizeOrder(order);
 
@@ -168,9 +172,10 @@ public class OrderServiceTest {
 	 *   Throw Exception
 	 *   
 	 *   No order will be processed since there is no input
+	 * @throws DatabaseUnavailableException 
 	 */
     @Test(expected = OrderFullfillmentException.class)
-    public void _06_orderPizzaNoOrder() throws UnauthorizedException, OrderFullfillmentException {
+    public void _06_orderPizzaNoOrder() throws UnauthorizedException, OrderFullfillmentException, DatabaseUnavailableException {
     	Order order = new Order();
     	orderService.finalizeOrder(order);
 

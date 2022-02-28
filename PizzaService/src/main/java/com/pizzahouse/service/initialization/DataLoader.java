@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -20,6 +21,8 @@ import com.pizzahouse.service.model.FlattenPizzaTopping;
 public class DataLoader implements ApplicationRunner {
 	@Autowired
 	protected DatabaseQuery<Pizza> pizzaQuery;
+	@Autowired
+	protected Logger logger;
 	
  	public static Map<String, FlattenPizzaSize> pizzaSizeMap = new HashMap<String, FlattenPizzaSize>();
  	public static Map<String, FlattenPizzaTopping> pizzaToppingMap = new HashMap<String, FlattenPizzaTopping>();

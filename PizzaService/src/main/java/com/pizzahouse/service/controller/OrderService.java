@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pizzahouse.common.config.Connection;
 import com.pizzahouse.common.config.Default;
 import com.pizzahouse.common.connection.HttpConnectionHelper;
+import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 
@@ -33,6 +34,8 @@ public class OrderService {
 	protected org.slf4j.Logger logger;
 	@Autowired
 	protected JwtService jwtService;
+	@Autowired
+	protected DataLoader dataLoader;
 	
 	/**
 	 * Order submittion process to persist Order data in DB 
@@ -40,8 +43,9 @@ public class OrderService {
 	 * @param order The order supplied by the user, containing the ordered item from front end.
 	 * @return Success with order complete / fail with error message 
 	 * @throws JsonProcessingException 
+	 * @throws DatabaseUnavailableException 
 	 */
-	public Response<String> submitOrder (int userId, Order order) throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException {
+	public Response<String> submitOrder (int userId, Order order) throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException, DatabaseUnavailableException {
 	
 		Confirmation confirmation = finalizeOrder(order);
 		confirmation.setUserId(userId);
@@ -58,8 +62,9 @@ public class OrderService {
 	 * Validation and calculation for the sub-total and grand total of the order 
 	 * @param order The order supplied by the user, containing the ordered item from front end.
 	 * @return Finalized confirmation object which is ready to persist in DB. The object containing the sub-total of each item, grand total of the order, and the item details of each order
+	 * @throws DatabaseUnavailableException 
 	 */
-	public Confirmation finalizeOrder (Order order) throws UnauthorizedException, OrderFullfillmentException {
+	public Confirmation finalizeOrder (Order order) throws UnauthorizedException, OrderFullfillmentException, DatabaseUnavailableException {
 
 		Confirmation confirmation = new Confirmation();
 		List<ConfirmationDetail> details = new ArrayList<ConfirmationDetail>();
@@ -68,6 +73,10 @@ public class OrderService {
 		
 		if (order.getDetails() == null || order.getDetails().size() == 0) {
 			throw new OrderFullfillmentException("There are no pizza ordered from the request");
+		}
+		
+		if (DataLoader.pizzaSizeMap == null || DataLoader.pizzaToppingMap == null || DataLoader.pizzaSizeMap.size() == 0 || DataLoader.pizzaToppingMap.size() == 0) {
+			dataLoader.run(null);
 		}
 
 		for(OrderDetail orderDetail : order.getDetails()) {

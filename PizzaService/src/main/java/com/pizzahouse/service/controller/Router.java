@@ -186,13 +186,13 @@ public class Router extends SpringBootServletInitializer {
 			response.setSuccess(false);
 			response.setError(error);
 			logger.warn("[RollbackException] transaction has been rejected and rolled back : " + e.getMessage());
-//		} catch(DatabaseUnavailableException e) {
-//			error.setErrorCode(ErrorCode.databaseUnavailableException);
-//			error.setErrorMessage("Database connection error, cannot obtain DB session");
-//			
-//			response.setSuccess(false);
-//			response.setError(error);
-//			logger.error("[DatabaseUnavailableException] Database connection error, cannot obtain DB session" + e.getMessage());
+		} catch(DatabaseUnavailableException e) {
+			error.setErrorCode(ErrorCode.databaseUnavailableException);
+			error.setErrorMessage("Database connection error, cannot obtain DB session");
+			
+			response.setSuccess(false);
+			response.setError(error);
+			logger.error("[DatabaseUnavailableException] Database connection error, cannot obtain DB session" + e.getMessage());
 		} catch(UnauthorizedException e) {
 			error.setErrorCode(ErrorCode.unauthorizedException);
 			error.setErrorMessage(e.getMessage());

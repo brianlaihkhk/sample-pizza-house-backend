@@ -1,0 +1,10 @@
+FROM adoptopenjdk/openjdk8
+
+WORKDIR /Users/brian/Documents/coding-test-pizza-house/OrderConfirmationService/
+COPY ./target/OrderConfirmationService-jar-with-dependencies.jar /tmp
+COPY ./src/main/resources/ /tmp
+WORKDIR /tmp
+# ENTRYPOINT ["java", "-Dspring.profiles.active=brian", "-jar", "OrderConfirmationService-jar-with-dependencies.jar"]
+ENTRYPOINT ["java", "-jar", "OrderConfirmationService-jar-with-dependencies.jar"]
+
+

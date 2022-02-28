@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 import com.pizzahouse.common.model.Response;
@@ -58,9 +59,10 @@ public class IntegrationTest {
 	 *   Total record : 4
 	 *   Total amount : 2 * (149 + 15 + 15) + 2 * 129 = 616
 	 * @throws JsonProcessingException 
+	 * @throws DatabaseUnavailableException 
 	 */
     @Test
-    public void _01_orderPizzaSet1() throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException {
+    public void _01_orderPizzaSet1() throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException, DatabaseUnavailableException {
     	Order order = OrderTestData.generateOrderSet1();
     	Response<String> response = orderService.submitOrder(1, order);
 
@@ -89,9 +91,10 @@ public class IntegrationTest {
 	 *   Total record : 7
 	 *   Total amount : 119 + 20 + 129 + 129 + 99 + 15 + 15 + 25 = 551
 	 * @throws JsonProcessingException 
+	 * @throws DatabaseUnavailableException 
 	 */
     @Test
-    public void _02_orderPizzaSet2() throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException {
+    public void _02_orderPizzaSet2() throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException, DatabaseUnavailableException {
     	Order order = OrderTestData.generateOrderSet2();
     	Response<String> response = orderService.submitOrder(2, order);
 
