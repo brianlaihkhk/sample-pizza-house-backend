@@ -61,6 +61,10 @@ public class Router extends SpringBootServletInitializer {
 		
 		try {
 			logger.info("calling PizzaHouse /login endpoint : " + username);
+			if (username == null || password == null) {
+				throw new UserProfileException("Required parameter cannot be empty");
+			}
+			
 			response = userService.userLogin(username, password);
 			logger.info("Finish calling PizzaHouse /login endpoint : " + mapper.writeValueAsString(response));
 		} catch(RollbackException e) {
@@ -118,6 +122,10 @@ public class Router extends SpringBootServletInitializer {
 		
 		try {
 			logger.info("calling PizzaHouse /create endpoint : " + username);
+			if (username == null || firstName == null || lastName == null || password == null) {
+				throw new UserProfileException("Required parameter cannot be empty");
+			}
+			
 			response = userService.createUser(username, firstName, lastName, password);
 			logger.info("Finish calling PizzaHouse /create endpoint : " + mapper.writeValueAsString(response));
 		} catch(RollbackException e) {
@@ -176,6 +184,10 @@ public class Router extends SpringBootServletInitializer {
 		
 		try {
 			logger.info("calling PizzaHouse /order endpoint : " + userId);
+			if (sessionToken == null || order == null) {
+				throw new OrderFullfillmentException("Required parameter cannot be empty");
+			}
+			
 			securityService.checkUserTokenByUserId(userId, sessionToken, Default.sessionTokenExpirationDays);
 			response = orderService.submitOrder(userId, order);
 			logger.info("Finish calling PizzaHouse /order endpoint : " + mapper.writeValueAsString(response));
