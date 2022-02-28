@@ -58,7 +58,7 @@ public class OrderService {
 		
 		String jwtResponse = (new HttpConnectionHelper<String>()).post(Connection.orderConfirmationServiceHost + Connection.orderConfirmationServiceName, jwtMessage, String.class);
 		
-		Response<String> response = (Response<String>) jwtService.decodeMessage(Response.class, jwtMessage);
+		Response<String> response = (Response<String>) jwtService.decodeMessage(Response.class, jwtResponse);
 		return response;
 	}
 	

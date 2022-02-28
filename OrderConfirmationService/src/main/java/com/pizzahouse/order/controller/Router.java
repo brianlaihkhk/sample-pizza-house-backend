@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,7 +47,7 @@ public class Router extends SpringBootServletInitializer {
 	 */
 	@RequestMapping(value = "confirm", method = RequestMethod.POST, produces = "text/plain")
 	@ResponseBody
-	public String submitOrder (String jwtMessage) {
+	public String submitOrder (@RequestBody String jwtMessage) {
 		Response<String> response = new Response<String>();
 		ErrorDetail error = new ErrorDetail();
 		Confirmation confirmation = new Confirmation();
@@ -59,7 +60,6 @@ public class Router extends SpringBootServletInitializer {
 			logger.info("decode jwt message : " + mapper.writeValueAsString(confirmation));
 
 			response = confirmationService.confirmOrder(confirmation);
-			jsonResponse = mapper.writeValueAsString(response);
 			
 			logger.info("Finish calling OrderConfirmation /confirm endpoint, wrapping using Jwt : " + mapper.writeValueAsString(response));
 		} catch(JsonMappingException e) {
@@ -114,8 +114,14 @@ public class Router extends SpringBootServletInitializer {
 			response.setSuccess(false);
 			response.setError(error);
 			logger.error("[Exception] Unknown error occured : " + e.getMessage());
+			e.printStackTrace();
 		}
 		
+		try {
+			jsonResponse = mapper.writeValueAsString(response);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
 		String jwtResponseMessage = jwtService.createJwt(String.valueOf(confirmation.getUserId()), Connection.serverIssuerName, jsonResponse, Connection.jwtTtlMilliseconds, Connection.serverJwtSecretKey);
 		logger.info("Finish calling OrderConfirmation /confirm endpoint : ");
 

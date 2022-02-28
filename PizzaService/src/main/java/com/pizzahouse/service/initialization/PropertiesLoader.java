@@ -8,12 +8,12 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.pizzahouse.common.config.Connection;
 import com.pizzahouse.common.config.Default;
 
-@Service
+@Component
 public class PropertiesLoader implements ApplicationRunner {
 	@Autowired
 	protected Logger logger;

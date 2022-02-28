@@ -103,7 +103,8 @@ public class JwtService<T> {
 		if (claims.getExpiration().before(now)) {
 			throw new JwtMessageExpiredException("Encoded message has been expired");
 		}
-		if (claims.getIssuer() != Connection.serverIssuerName) {
+
+		if (!claims.getIssuer().trim().equals(Connection.serverIssuerName.trim())) {
 			throw new JwtIssuerNotMatchException("Issuer of the encoded message does not match");
 		}
 		

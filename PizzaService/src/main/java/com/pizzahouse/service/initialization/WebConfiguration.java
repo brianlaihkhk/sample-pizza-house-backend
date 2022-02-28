@@ -16,11 +16,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pizzahouse.common.config.Connection;
+import com.pizzahouse.common.config.Default;
 
 @Configuration
 public class WebConfiguration{
 	private SessionFactory sessionFactory = null;
+	private ObjectMapper mapper = new ObjectMapper();
 
 	@Bean
     public org.slf4j.Logger produceLogger(InjectionPoint injectionPoint) {
@@ -45,11 +49,11 @@ public class WebConfiguration{
     private SessionFactory generateSessionFactory() {
     	org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration();
         configuration.configure(Connection.hibernateConfigFilename);
-        
-        Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forJavaClassPath()));
-        Set<Class<?>> types = reflections.getTypesAnnotatedWith(javax.persistence.Entity.class);
+
+        Reflections reflections = new Reflections(Default.pizzaServiceEntityPackagePath);
+        Set<Class<? extends Object>> types = reflections.getTypesAnnotatedWith(javax.persistence.Entity.class);
         types.forEach(clazz -> configuration.addAnnotatedClass(clazz));
-           
+        
         StandardServiceRegistryBuilder ssrb = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
         return configuration.buildSessionFactory(ssrb.build());
     }

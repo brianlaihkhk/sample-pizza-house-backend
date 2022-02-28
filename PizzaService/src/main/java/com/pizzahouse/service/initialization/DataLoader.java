@@ -17,7 +17,7 @@ import com.pizzahouse.service.entity.Pizza;
 import com.pizzahouse.service.model.FlattenPizzaSize;
 import com.pizzahouse.service.model.FlattenPizzaTopping;
 
-@Service
+@Component
 public class DataLoader implements ApplicationRunner {
 	@Autowired
 	protected DatabaseQuery<Pizza> pizzaQuery;
@@ -27,13 +27,12 @@ public class DataLoader implements ApplicationRunner {
  	public static Map<String, FlattenPizzaSize> pizzaSizeMap = new HashMap<String, FlattenPizzaSize>();
  	public static Map<String, FlattenPizzaTopping> pizzaToppingMap = new HashMap<String, FlattenPizzaTopping>();
 
-    public void run(ApplicationArguments args) throws DatabaseUnavailableException {
+	public void run(ApplicationArguments args) throws DatabaseUnavailableException {
     	logger.info("DataLoader start");
-    	
+
     	List<Pizza> pizzaList = pizzaQuery.selectAll(Pizza.class);
     	
-    	System.out.println(pizzaList.size());
-    	
+  	
 		for (Pizza pizza : pizzaList) {
 			FlattenPizzaSize flattenPizzaSize = new FlattenPizzaSize();
 			flattenPizzaSize.setPizzaSize(pizza.getPizzaSize());
@@ -50,7 +49,7 @@ public class DataLoader implements ApplicationRunner {
 			pizzaToppingMap.put(pizza.getPizzaType().getTypeId() + "," + pizza.getPizzaTopping().getToppingId(), flattenPizzaTopping);
 
 		}
-		
+
     	logger.info("DataLoader end");
 
   /*    DatabaseQuery<FlattenPizzaSize> pizzaSizeQuery = new DatabaseQuery<FlattenPizzaSize>();
