@@ -138,7 +138,7 @@ public class OrderServiceTest {
 	 *   --------------------------------------
 	 *   1 Square Regular California Pizza
 	 *   1 Beef topping on California Pizza
-	 *   2 Egg Toppings on Neapolitan Pizza
+	 *   2 Round Large New York Pizza
 	 *   1 Round Regular Chicago Pizza
 	 *   1 Chicken topping on Chicago Pizza
 	 *   1 Egg topping on Chicago Pizza
