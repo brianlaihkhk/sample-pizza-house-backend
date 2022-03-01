@@ -120,14 +120,23 @@ public class Router extends SpringBootServletInitializer {
 		try {
 			jsonResponse = mapper.writeValueAsString(response);
 		} catch (JsonProcessingException e) {
-			error.setErrorCode(ErrorCode.baseException);
+			error.setErrorCode(ErrorCode.jsonProcessingException);
 			error.setErrorMessage("[JsonProcessingException] Json Processing Exception occured : " + e.getMessage());
 			
 			response.setSuccess(false);
 			response.setError(error);
 			logger.error("[JsonProcessingException] Json Processing Exception occured : " + e.getMessage());
 			e.printStackTrace();
+		} catch(Exception e) {
+			error.setErrorCode(ErrorCode.baseException);
+			error.setErrorMessage("Unknown error occured, please try again later");
+			
+			response.setSuccess(false);
+			response.setError(error);
+			logger.error("[Exception] Unknown error occured : " + e.getMessage());
+			e.printStackTrace();
 		}
+		
 		String jwtResponseMessage = jwtService.createJwt(String.valueOf(confirmation.getUserId()), Connection.serverIssuerName, jsonResponse, Connection.jwtTtlMilliseconds, Connection.serverJwtSecretKey);
 		logger.info("Finish calling OrderConfirmation /confirm endpoint : ");
 
