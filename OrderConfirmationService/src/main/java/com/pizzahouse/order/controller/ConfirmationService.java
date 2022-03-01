@@ -108,8 +108,7 @@ public class ConfirmationService {
 			response.setSuccess(true);
 			response.setPayload("Order cofirmed : " + recordId);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new OrderFullfillmentException("Unable to insert into DB, transaction rolled back : " + e.getMessage());
 		}
 
 		
