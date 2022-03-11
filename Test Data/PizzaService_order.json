@@ -9,18 +9,18 @@ Json (Body) :
 {
     "details": [
       {
-        "pizzaTypeId": 1,
-        "pizzaSizeId": 4,
-        "pizzaToppingIdList": [
-          1,
-          2
+        "pizzaTypeUuid": "e676d1c5-7920-408a-a570-cd2b3d9ed24f",
+        "pizzaSizeUuid": "af9d2771-9dce-40a0-ac80-1adf19088017",
+        "pizzaToppingUuidList": [
+          "eca3dd33-0aab-4ce7-bb41-14bcc9212aaf",
+          "d53837f6-94d9-423c-9765-45e41073adb3"
         ],
         "quantity": 2
       },
       {
-        "pizzaTypeId": 3,
-        "pizzaSizeId": 2,
-        "pizzaToppingIdList": [],
+        "pizzaTypeUuid": "3e4a0c24-b820-4a53-b379-5dacb38b439d",
+        "pizzaSizeUuid": "8d6ab16c-a2ab-46b3-8aa0-91674295afb7",
+        "pizzaToppingUuidList": [],
         "quantity": 2
       }
     ]
