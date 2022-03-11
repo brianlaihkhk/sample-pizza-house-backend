@@ -17,13 +17,13 @@ public class ConfirmationHelper {
 	 * @param subTotal Sub total of that item (i.e quantity * singlePrice)
 	 * @return ConfirmationDetail object
 	 */
-	public static ConfirmationDetail createConfirmationDetail(int pizzaTypeId, int subItemCategoryId, int subItemReferenceId, int quantity, int singlePrice, int subTotal) {
+	public static ConfirmationDetail createConfirmationDetail(String pizzaTypeUuid, int subItemCategoryUuid, String subItemReferenceUuid, int quantity, int singlePrice, int subTotal) {
 		ConfirmationDetail confirmationDetail = new ConfirmationDetail();
-		confirmationDetail.setPizzaTypeId(pizzaTypeId);
+		confirmationDetail.setPizzaTypeUuid(pizzaTypeUuid);
 		confirmationDetail.setQuantity(quantity);
 		confirmationDetail.setSinglePrice(singlePrice);
-		confirmationDetail.setSubItemCategoryId(subItemCategoryId);
-		confirmationDetail.setSubItemReferenceId(subItemReferenceId);
+		confirmationDetail.setSubItemCategoryId(subItemCategoryUuid);
+		confirmationDetail.setSubItemReferenceUuid(subItemReferenceUuid);
 		confirmationDetail.setSubTotal(subTotal);
 		return confirmationDetail;
 	}
@@ -35,9 +35,9 @@ public class ConfirmationHelper {
 	 * @param details Purchase item breakdown
 	 * @return Confirmation object
 	 */
-	public static Confirmation createConfirmation(int userId, int totalAmount, List<ConfirmationDetail> details) {
+	public static Confirmation createConfirmation(String userUuid, int totalAmount, List<ConfirmationDetail> details) {
 		Confirmation confirmation = new Confirmation();
-		confirmation.setUserId(userId);
+		confirmation.setUserUuid(userUuid);
 		confirmation.setTotalAmount(totalAmount);
 		confirmation.setDetails(details);
 		return confirmation;

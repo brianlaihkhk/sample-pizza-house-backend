@@ -12,9 +12,8 @@ import javax.persistence.Table;
 public class PizzaSize {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="PIZZA_SIZE_ID")
-	private int sizeId;
+	@Column(name="PIZZA_SIZE_UUID")
+	private String sizeUuid;
 
     @Column(name="NAME", length=100, nullable=false)
 	private String name;
@@ -25,11 +24,11 @@ public class PizzaSize {
     @Column(name="PRICE", scale=2, nullable=false)
 	private float price;
     
-	public int getSizeId() {
-		return sizeId;
+	public String getSizeUuid() {
+		return sizeUuid;
 	}
-	public void setSizeId(int sizeId) {
-		this.sizeId = sizeId;
+	public void setSizeUuid(String sizeUuid) {
+		this.sizeUuid = sizeUuid;
 	}
 	public String getName() {
 		return name;

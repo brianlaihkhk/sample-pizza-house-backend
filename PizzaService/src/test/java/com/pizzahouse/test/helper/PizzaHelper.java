@@ -18,8 +18,8 @@ public class PizzaHelper {
  		FlattenPizzaSize pizzaSizeFlatten = new FlattenPizzaSize();
  		pizzaSizeFlatten.setPizzaSize(pizzaSize);
  		pizzaSizeFlatten.setPizzaType(pizzaType);
- 		pizzaSizeFlatten.setPizzaSizeId(pizzaSize.getSizeId());
- 		pizzaSizeFlatten.setPizzaTypeId(pizzaType.getTypeId());
+ 		pizzaSizeFlatten.setPizzaSizeId(pizzaSize.getSizeUuid());
+ 		pizzaSizeFlatten.setPizzaTypeId(pizzaType.getTypeUuid());
  		return pizzaSizeFlatten;
     }
 
@@ -33,8 +33,8 @@ public class PizzaHelper {
  		FlattenPizzaTopping pizzaToppingFlatten = new FlattenPizzaTopping();
  		pizzaToppingFlatten.setPizzaTopping(pizzaTopping);
  		pizzaToppingFlatten.setPizzaType(pizzaType);
- 		pizzaToppingFlatten.setPizzaToppingId(pizzaTopping.getToppingId());
- 		pizzaToppingFlatten.setPizzaTypeId(pizzaType.getTypeId());
+ 		pizzaToppingFlatten.setPizzaToppingId(pizzaTopping.getToppingUuid());
+ 		pizzaToppingFlatten.setPizzaTypeId(pizzaType.getTypeUuid());
  		return pizzaToppingFlatten;
     }	
  	
@@ -46,9 +46,9 @@ public class PizzaHelper {
 	 * @param sizePrice How much of the pizza size
 	 * @return PizzaTopping object
 	 */
- 	public static PizzaSize createPizzaSize(int sizeId, String sizeName, String sizeDescription, float sizePrice){
+ 	public static PizzaSize createPizzaSize(String sizeId, String sizeName, String sizeDescription, float sizePrice){
  		PizzaSize pizzaSize = new PizzaSize();
- 		pizzaSize.setSizeId(sizeId);
+ 		pizzaSize.setSizeUuid(sizeId);
  		pizzaSize.setName(sizeName);
  		pizzaSize.setDescription(sizeDescription);
  		pizzaSize.setPrice(sizePrice);
@@ -62,9 +62,9 @@ public class PizzaHelper {
 	 * @param typeDescription Type item description
 	 * @return PizzaTopping object
 	 */
- 	public static PizzaType createPizzaType(int typeId, String typeName, String typeDescription){
+ 	public static PizzaType createPizzaType(String typeId, String typeName, String typeDescription){
  		PizzaType pizzaType = new PizzaType();
- 		pizzaType.setTypeId(typeId);
+ 		pizzaType.setTypeUuid(typeId);
  		pizzaType.setName(typeName);
  		pizzaType.setDescription(typeDescription);
  		return pizzaType;
@@ -78,9 +78,9 @@ public class PizzaHelper {
 	 * @param toppingPrice How much of the topping
 	 * @return PizzaTopping object
 	 */
- 	public static PizzaTopping createPizzaTopping(int toppingId, String toppingName, String toppingDescription, float toppingPrice){
+ 	public static PizzaTopping createPizzaTopping(String toppingId, String toppingName, String toppingDescription, float toppingPrice){
  		PizzaTopping pizzaTopping = new PizzaTopping();
- 		pizzaTopping.setToppingId(toppingId);
+ 		pizzaTopping.setToppingUuid(toppingId);
  		pizzaTopping.setName(toppingName);
  		pizzaTopping.setDescription(toppingDescription);
  		pizzaTopping.setPrice(toppingPrice);

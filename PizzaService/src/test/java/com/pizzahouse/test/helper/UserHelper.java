@@ -29,9 +29,9 @@ public class UserHelper {
 	 * @param creationEpochTime Create time in epoch format (Using Date column in mysql will have performance issue under high frequency select)
 	 * @return Session object
 	 */
- 	public static Session createSession(int userId, String token, long creationEpochTime){
+ 	public static Session createSession(String userId, String token, long creationEpochTime){
  		Session session = new Session();
- 		session.setUserId(userId);
+ 		session.setUserUuid(userId);
  		session.setToken(token);
  		session.setCreationEpochTime(creationEpochTime);
 

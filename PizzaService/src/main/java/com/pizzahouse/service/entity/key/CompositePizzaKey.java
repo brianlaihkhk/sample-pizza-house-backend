@@ -9,37 +9,37 @@ import javax.persistence.Id;
 @Embeddable
 public class CompositePizzaKey  implements Serializable {
 
-	@Column(name="PIZZA_TYPE_ID")
-	private int pizzaTypeId;
+	@Column(name="PIZZA_TYPE_UUID")
+	private String pizzaTypeUuid;
 	
-	@Column(name="PIZZA_SIZE_ID")
-	private int pizzaSizeId;
+	@Column(name="PIZZA_SIZE_UUID")
+	private String pizzaSizeUuid;
 	
-	@Column(name="PIZZA_TOPPING_ID")
-	private int pizzaToppingId;
+	@Column(name="PIZZA_TOPPING_UUID")
+	private String pizzaToppingUuid;
 
-	public int getPizzaTypeId() {
-		return pizzaTypeId;
+	public String getPizzaTypeId() {
+		return pizzaTypeUuid;
 	}
 
-	public void setPizzaTypeId(int pizzaTypeId) {
-		this.pizzaTypeId = pizzaTypeId;
+	public void setPizzaTypeUuid(String pizzaTypeUuid) {
+		this.pizzaTypeUuid = pizzaTypeUuid;
 	}
 
-	public int getPizzaSizeId() {
-		return pizzaSizeId;
+	public String getPizzaSizeUuid() {
+		return pizzaSizeUuid;
 	}
 
-	public void setPizzaSizeId(int pizzaSizeId) {
-		this.pizzaSizeId = pizzaSizeId;
+	public void setPizzaSizeUuid(String pizzaSizeUuid) {
+		this.pizzaSizeUuid = pizzaSizeUuid;
 	}
 
-	public int getPizzaToppingId() {
-		return pizzaToppingId;
+	public String getPizzaToppingUuid() {
+		return pizzaToppingUuid;
 	}
 
-	public void setPizzaToppingId(int pizzaToppingId) {
-		this.pizzaToppingId = pizzaToppingId;
+	public void setPizzaToppingUuid(String pizzaToppingUuid) {
+		this.pizzaToppingUuid = pizzaToppingUuid;
 	}
 	
 	

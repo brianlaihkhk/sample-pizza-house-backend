@@ -17,9 +17,9 @@ import com.pizzahouse.service.model.Order;
 import com.pizzahouse.service.model.OrderDetail;
 import com.pizzahouse.service.security.JwtService;
 import com.pizzahouse.common.model.Response;
+import com.pizzahouse.service.config.Connection;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pizzahouse.common.config.Connection;
 import com.pizzahouse.common.config.Default;
 import com.pizzahouse.common.connection.HttpConnectionHelper;
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
@@ -38,6 +38,8 @@ public class OrderService {
 	protected JwtService jwtService;
 	@Autowired
 	protected DataLoader dataLoader;
+	@Autowired
+	protected com.pizzahouse.service.config.Connection connection;
 	
 	/**
 	 * Order submittion process to persist Order data in DB 
@@ -49,14 +51,14 @@ public class OrderService {
 	 * @throws JwtIssuerNotMatchException 
 	 * @throws JwtMessageExpiredException 
 	 */
-	public Response<String> submitOrder (int userId, Order order) throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException, DatabaseUnavailableException, JwtMessageExpiredException, JwtIssuerNotMatchException {
+	public Response<String> submitOrder (String userUuid, Order order) throws UnauthorizedException, OrderFullfillmentException, JsonProcessingException, DatabaseUnavailableException, JwtMessageExpiredException, JwtIssuerNotMatchException {
 	
 		Confirmation confirmation = finalizeOrder(order);
-		confirmation.setUserId(userId);
+		confirmation.setUserUuid(userUuid);
 		
-		String jwtMessage = jwtService.createJwt(String.valueOf(userId), Connection.serverIssuerName, mapper.writeValueAsString(confirmation), Connection.jwtTtlMilliseconds, Connection.serverJwtSecretKey);
-		
-		String jwtResponse = (new HttpConnectionHelper<String>()).post(Connection.orderConfirmationServiceHost + Connection.orderConfirmationServiceName, jwtMessage, String.class);
+		String jwtMessage = jwtService.createJwt(String.valueOf(userUuid), connection.getServerIssuerName(), mapper.writeValueAsString(confirmation), connection.getJwtTtlMilliseconds(), connection.getServerJwtSecretKey());
+			
+		String jwtResponse = (new HttpConnectionHelper<String>()).post(connection.getOrderConfirmationServiceHost() + connection.getOrderConfirmationServiceName(), jwtMessage, String.class);
 		
 		Response<String> response = (Response<String>) jwtService.decodeMessage(Response.class, jwtResponse);
 		return response;
@@ -85,15 +87,15 @@ public class OrderService {
 		}
 
 		for(OrderDetail orderDetail : order.getDetails()) {
-			String sizeKey = orderDetail.getPizzaTypeId() + "," + orderDetail.getPizzaSizeId();
+			String sizeKey = orderDetail.getPizzaTypeUuid() + "," + orderDetail.getPizzaSizeUuid();
 			if (DataLoader.pizzaSizeMap.containsKey(sizeKey)) {
 				FlattenPizzaSize pizzaSizeFlatten = DataLoader.pizzaSizeMap.get(sizeKey);
 				float subTotal = orderDetail.getQuantity() * pizzaSizeFlatten.getPizzaSize().getPrice();
 				
 				ConfirmationDetail confirmationDetail = new ConfirmationDetail();
-				confirmationDetail.setPizzaTypeId(pizzaSizeFlatten.getPizzaTypeId());
+				confirmationDetail.setPizzaTypeUuid(pizzaSizeFlatten.getPizzaTypeId());
 				confirmationDetail.setSubItemCategoryId(Default.subItemCategoryIdPizzaSize);
-				confirmationDetail.setSubItemReferenceId(pizzaSizeFlatten.getPizzaSizeId());
+				confirmationDetail.setSubItemReferenceUuid(pizzaSizeFlatten.getPizzaSizeId());
 				confirmationDetail.setQuantity(orderDetail.getQuantity());
 				confirmationDetail.setSinglePrice(pizzaSizeFlatten.getPizzaSize().getPrice());
 				confirmationDetail.setSubTotal(subTotal);
@@ -104,17 +106,17 @@ public class OrderService {
 				throw new OrderFullfillmentException("The order request contains unsupported pizza size");
 			}
 		
-			for(Integer toppingId : orderDetail.getPizzaToppingIdList()) {
-				String toppingKey = orderDetail.getPizzaTypeId() + "," + toppingId;
+			for(String toppingId : orderDetail.getPizzaToppingUuidList()) {
+				String toppingKey = orderDetail.getPizzaTypeUuid() + "," + toppingId;
 
 				if (DataLoader.pizzaToppingMap.containsKey(toppingKey)) {
 					FlattenPizzaTopping pizzaToppingFlatten = DataLoader.pizzaToppingMap.get(toppingKey);
 					float subTotal = orderDetail.getQuantity() * pizzaToppingFlatten.getPizzaTopping().getPrice();
 					
 					ConfirmationDetail confirmationDetail = new ConfirmationDetail();
-					confirmationDetail.setPizzaTypeId(pizzaToppingFlatten.getPizzaTypeId());
+					confirmationDetail.setPizzaTypeUuid(pizzaToppingFlatten.getPizzaTypeId());
 					confirmationDetail.setSubItemCategoryId(Default.subItemCategoryIdPizzaTopping);
-					confirmationDetail.setSubItemReferenceId(pizzaToppingFlatten.getPizzaToppingId());
+					confirmationDetail.setSubItemReferenceUuid(pizzaToppingFlatten.getPizzaToppingId());
 					confirmationDetail.setQuantity(orderDetail.getQuantity());
 					confirmationDetail.setSinglePrice(pizzaToppingFlatten.getPizzaTopping().getPrice());
 					confirmationDetail.setSubTotal(subTotal);

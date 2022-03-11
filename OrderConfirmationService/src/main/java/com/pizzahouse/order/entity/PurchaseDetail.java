@@ -1,5 +1,7 @@
 package com.pizzahouse.order.entity;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,18 +14,17 @@ import javax.persistence.Table;
 public class PurchaseDetail {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="PURCHASE_DETAIL_ID")
-	private int purchaseDetailId;
+	@Column(name="PURCHASE_DETAIL_UUID", unique = true, nullable = false)
+	private String purchaseDetailUuid;
 
-	@Column(name="PURCHASE_ID")
-	private int purchaseId;
+	@Column(name="PURCHASE_UUID")
+	private String purchaseUuid;
 	
-	@Column(name="PIZZA_TYPE_ID")
-	private int pizzaTypeId;
+	@Column(name="PIZZA_TYPE_UUID")
+	private String pizzaTypeUuid;
 
-	@Column(name="SUB_ITEM_REFERENCE_ID")
-	private int subItemReferenceId;
+	@Column(name="SUB_ITEM_REFERENCE_UUID")
+	private String subItemReferenceUuid;
 	
 	@Column(name="SUB_ITEM_CATEGORY_ID")
 	private int subItemCategoryId;
@@ -37,37 +38,40 @@ public class PurchaseDetail {
     @Column(name="SUB_TOTAL", scale=2, nullable=false)
 	private float subTotal;
     
-
-	public int getPurchaseDetailId() {
-		return purchaseDetailId;
+    public PurchaseDetail() {
+    	setPurchaseDetailUuid(UUID.randomUUID().toString());
+    }
+    
+	public String getPurchaseDetailUuid() {
+		return purchaseDetailUuid;
 	}
 
-	public void setPurchaseDetailId(int purchaseDetailId) {
-		this.purchaseDetailId = purchaseDetailId;
+	public void setPurchaseDetailUuid(String purchaseDetailUuid) {
+		this.purchaseDetailUuid = purchaseDetailUuid;
 	}
 
-	public int getPurchaseId() {
-		return purchaseId;
+	public String getPurchaseUuid() {
+		return purchaseUuid;
 	}
 
-	public void setPurchaseId(int purchaseId) {
-		this.purchaseId = purchaseId;
+	public void setPurchaseUuid(String purchaseUuid) {
+		this.purchaseUuid = purchaseUuid;
 	}
 
-	public int getPizzaTypeId() {
-		return pizzaTypeId;
+	public String getPizzaTypeUuid() {
+		return pizzaTypeUuid;
 	}
 
-	public void setPizzaTypeId(int pizzaTypeId) {
-		this.pizzaTypeId = pizzaTypeId;
+	public void setPizzaTypeUuid(String pizzaTypeUuid) {
+		this.pizzaTypeUuid = pizzaTypeUuid;
 	}
 
-	public int getSubItemReferenceId() {
-		return subItemReferenceId;
+	public String getSubItemReferenceUuid() {
+		return subItemReferenceUuid;
 	}
 
-	public void setSubItemReferenceId(int subItemReferenceId) {
-		this.subItemReferenceId = subItemReferenceId;
+	public void setSubItemReferenceUuid(String subItemReferenceUuid) {
+		this.subItemReferenceUuid = subItemReferenceUuid;
 	}
 
 	public int getSubItemCategoryId() {

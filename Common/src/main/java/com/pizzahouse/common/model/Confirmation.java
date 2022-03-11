@@ -4,15 +4,15 @@ import java.util.List;
 
 public class Confirmation {
 
-	private int userId;
+	private String userUuid;
 	private float totalAmount;
 	private List<ConfirmationDetail> details;
 	
-	public int getUserId() {
-		return userId;
+	public String getUserUuid() {
+		return userUuid;
 	}
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUserUuid(String userUuid) {
+		this.userUuid = userUuid;
 	}
 	public float getTotalAmount() {
 		return totalAmount;

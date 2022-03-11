@@ -1,6 +1,12 @@
+Header :
+
+uuid : XXXXXXXXXXX
+session : XXXXXXXXXXXXXXXXXX
+
+
+Json (Body) : 
+
 {
-    "userId": XXXXXXXXXXX,
-    "session": "XXXXXXXXXXXXXXXXXX",
     "details": [
       {
         "pizzaTypeId": 1,

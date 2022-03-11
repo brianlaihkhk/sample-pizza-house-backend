@@ -12,14 +12,15 @@ import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InjectionPoint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pizzahouse.common.config.Connection;
 import com.pizzahouse.common.config.Default;
+import com.pizzahouse.service.config.Connection;
 
 @Configuration
 public class WebConfiguration{
@@ -48,7 +49,7 @@ public class WebConfiguration{
     
     private SessionFactory generateSessionFactory() {
     	org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration();
-        configuration.configure(Connection.hibernateConfigFilename);
+        configuration.configure(Default.hibernateConfigFilename);
 
         Reflections reflections = new Reflections(Default.pizzaServiceEntityPackagePath);
         Set<Class<? extends Object>> types = reflections.getTypesAnnotatedWith(javax.persistence.Entity.class);

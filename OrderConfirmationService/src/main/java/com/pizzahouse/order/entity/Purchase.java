@@ -23,12 +23,11 @@ import javax.persistence.CascadeType;
 public class Purchase {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="PURCHASE_ID")
-	private int id;
+	@Column(name="PURCHASE_UUID", unique = true, nullable = false)
+	private String uuid;
 
-    @Column(name = "USER_ID")
-	private int userId;
+    @Column(name = "USER_UUID", nullable=false)
+	private String userUuid;
 
     @Column(name="TOTAL_AMOUNT", scale=2, nullable=false)
 	private float totalAmount;
@@ -47,20 +46,20 @@ public class Purchase {
 	@Column(name="CREATION_EPOCH_TIME")
 	private long creationEpochTime;
 
-	public int getId() {
-		return id;
+	public String getUuid() {
+		return uuid;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setId(String uuid) {
+		this.uuid = uuid;
 	}
 
-	public int getUserId() {
-		return userId;
+	public String getUserUuid() {
+		return userUuid;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUserUuid(String userUuid) {
+		this.userUuid = userUuid;
 	}
 
 	public float getTotalAmount() {
@@ -70,14 +69,6 @@ public class Purchase {
 	public void setTotalAmount(float totalAmount) {
 		this.totalAmount = totalAmount;
 	}
-
-//	public List<PurchaseDetail> getDetails() {
-//		return details;
-//	}
-//
-//	public void setDetails(List<PurchaseDetail> details) {
-//		this.details = details;
-//	}
 
 	public Date getCreationTime() {
 		return creationTime;

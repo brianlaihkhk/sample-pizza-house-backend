@@ -10,18 +10,21 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pizzahouse.common.config.Default;
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 import com.pizzahouse.common.model.Confirmation;
+import com.pizzahouse.service.config.Connection;
 import com.pizzahouse.service.controller.OrderService;
 import com.pizzahouse.service.initialization.DataLoader;
-import com.pizzahouse.service.initialization.PropertiesLoader;
 import com.pizzahouse.service.model.Order;
 import com.pizzahouse.test.data.DataLoaderTestData;
 import com.pizzahouse.test.data.OrderTestData;
@@ -30,20 +33,31 @@ import com.pizzahouse.test.data.OrderTestData;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath*:/applicationContext.xml")
+@TestPropertySource(properties = {
+	    "pizzaServiceHost=http://localhost:8080/PizzaService/",
+	    "orderConfirmationServiceHost=http://localhost:8080/OrderConfirmationService/",
+	    "serverJwtSecretKey=bcbac5b821435e0be3e59d6abdac12a94c8248288a6ebd76a56a01fbca7c0cdf",
+	    "serverIssuerName=cdc43c7e9089a41897b101de70f878bcc575c839f4ad057605a3335f6a601133",
+	    "jwtTtlMilliseconds=10000",
+	    "orderConfirmationServiceName=confirm"
+	})
 public class OrderServiceTest {
 	@Autowired
 	protected OrderService orderService;
 	@Autowired
 	protected Logger logger;
 	@Autowired
-	protected PropertiesLoader propertiesLoader;
+	protected Connection connection;
 	private ObjectMapper objectMapper = new ObjectMapper();
 
+	
+	
 	/**
 	 * Populate data to PizzaSizeMap and PizzaToppingMap
 	 */
     @BeforeClass
     public static void instantiate() {
+       	Default.hibernateConfigFilename = "hibernate.dev.cfg.xml";
     	DataLoader.pizzaSizeMap = DataLoaderTestData.generatePizzaSizeMapSet1();
     	DataLoader.pizzaToppingMap = DataLoaderTestData.generatePizzaToppingMapSet1();
     }
@@ -55,9 +69,6 @@ public class OrderServiceTest {
      */
     @Test
     public void _00_initialize() throws Exception {
-    	propertiesLoader.setConnectionInputStream(this.getClass().getClassLoader().getResourceAsStream("connection.properties"));
-    	propertiesLoader.setDefaultInputStream(this.getClass().getClassLoader().getResourceAsStream("default.properties"));
-    	propertiesLoader.populate();
     }
     
 	/**
@@ -65,17 +76,17 @@ public class OrderServiceTest {
 	 */
     @Test
     public void _01_pizzaSizeMapTest() {
-        assertEquals(1, DataLoader.pizzaSizeMap.get("1,2").getPizzaTypeId());
-        assertEquals(2, DataLoader.pizzaSizeMap.get("1,2").getPizzaSizeId());
-        assertEquals(1, DataLoader.pizzaSizeMap.get("1,2").getPizzaType().getTypeId());
-        assertEquals(2, DataLoader.pizzaSizeMap.get("1,2").getPizzaSize().getSizeId());
+        assertEquals(OrderTestData.neapolianPizzaUuid, DataLoader.pizzaSizeMap.get(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.roundLargeUuid).getPizzaTypeId());
+        assertEquals(OrderTestData.roundLargeUuid, DataLoader.pizzaSizeMap.get(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.roundLargeUuid).getPizzaSizeId());
+        assertEquals(OrderTestData.neapolianPizzaUuid, DataLoader.pizzaSizeMap.get(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.squareRegularUuid).getPizzaTypeId());
+        assertEquals(OrderTestData.squareRegularUuid, DataLoader.pizzaSizeMap.get(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.squareRegularUuid).getPizzaSize().getSizeUuid());
 
-        assertEquals(4, DataLoader.pizzaSizeMap.get("4,1").getPizzaTypeId());
-        assertEquals(1, DataLoader.pizzaSizeMap.get("4,1").getPizzaSizeId());
-        assertEquals(4, DataLoader.pizzaSizeMap.get("4,1").getPizzaType().getTypeId());
-        assertEquals(1, DataLoader.pizzaSizeMap.get("4,1").getPizzaSize().getSizeId());
+        assertEquals(OrderTestData.californiaPizzaUuid, DataLoader.pizzaSizeMap.get(OrderTestData.californiaPizzaUuid + "," + OrderTestData.roundRegularUuid).getPizzaTypeId());
+        assertEquals(OrderTestData.roundRegularUuid, DataLoader.pizzaSizeMap.get(OrderTestData.californiaPizzaUuid + "," + OrderTestData.roundRegularUuid).getPizzaSizeId());
+        assertEquals(OrderTestData.californiaPizzaUuid, DataLoader.pizzaSizeMap.get(OrderTestData.californiaPizzaUuid + "," + OrderTestData.roundRegularUuid).getPizzaTypeId());
+        assertEquals(OrderTestData.roundRegularUuid, DataLoader.pizzaSizeMap.get(OrderTestData.californiaPizzaUuid + "," + OrderTestData.roundRegularUuid).getPizzaSize().getSizeUuid());
         
-        assertNull(DataLoader.pizzaSizeMap.get("3,3"));
+        assertNull(DataLoader.pizzaSizeMap.get(OrderTestData.newYorkPizzaUuid + "," + OrderTestData.squareRegularUuid));
     }
 
 	/**
@@ -83,17 +94,17 @@ public class OrderServiceTest {
 	 */
     @Test
     public void _02_pizzaToppingMapTest() {
-        assertEquals(1, DataLoader.pizzaToppingMap.get("1,5").getPizzaTypeId());
-        assertEquals(5, DataLoader.pizzaToppingMap.get("1,5").getPizzaToppingId());
-        assertEquals(1, DataLoader.pizzaToppingMap.get("1,5").getPizzaType().getTypeId());
-        assertEquals(5, DataLoader.pizzaToppingMap.get("1,5").getPizzaTopping().getToppingId());
+        assertEquals(OrderTestData.neapolianPizzaUuid , DataLoader.pizzaToppingMap.get(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.eggUuid).getPizzaTypeId());
+        assertEquals(OrderTestData.eggUuid, DataLoader.pizzaToppingMap.get(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.eggUuid).getPizzaToppingId());
+        assertEquals(OrderTestData.neapolianPizzaUuid , DataLoader.pizzaToppingMap.get(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.beefUuid).getPizzaTypeId());
+        assertEquals(OrderTestData.beefUuid, DataLoader.pizzaToppingMap.get(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.beefUuid).getPizzaToppingId());
         
-        assertEquals(3, DataLoader.pizzaToppingMap.get("3,2").getPizzaTypeId());
-        assertEquals(2, DataLoader.pizzaToppingMap.get("3,2").getPizzaToppingId());
-        assertEquals(3, DataLoader.pizzaToppingMap.get("3,2").getPizzaType().getTypeId());
-        assertEquals(2, DataLoader.pizzaToppingMap.get("3,2").getPizzaTopping().getToppingId());
+        assertEquals(OrderTestData.newYorkPizzaUuid, DataLoader.pizzaToppingMap.get(OrderTestData.newYorkPizzaUuid + "," + OrderTestData.chickenUuid).getPizzaTypeId());
+        assertEquals(OrderTestData.chickenUuid, DataLoader.pizzaToppingMap.get(OrderTestData.newYorkPizzaUuid + "," + OrderTestData.chickenUuid).getPizzaToppingId());
+        assertEquals(OrderTestData.newYorkPizzaUuid, DataLoader.pizzaToppingMap.get(OrderTestData.newYorkPizzaUuid + "," + OrderTestData.eggUuid).getPizzaTypeId());
+        assertEquals(OrderTestData.eggUuid, DataLoader.pizzaToppingMap.get(OrderTestData.newYorkPizzaUuid + "," + OrderTestData.eggUuid).getPizzaToppingId());
         
-        assertNull(null, DataLoader.pizzaToppingMap.get("2,5"));
+        assertNull(null, DataLoader.pizzaToppingMap.get(OrderTestData.chicagoPizzaUuid + "," + OrderTestData.beefUuid));
     }
     
 	/**

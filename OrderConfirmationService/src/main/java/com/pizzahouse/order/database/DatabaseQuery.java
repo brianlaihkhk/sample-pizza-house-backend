@@ -112,11 +112,11 @@ public class DatabaseQuery<T> {
 	 * @param entity Entity to insert
 	 * @return ID of the record (The field which annotates @id specified in the entity)
 	 */
-	public int insert(T entity) {
+	public Object insert(T entity) {
 		try {
 			logger.debug("Start insert");
 			dbSession.beginTransaction();
-			int id = (Integer) dbSession.save(entity);
+			Object id = dbSession.save(entity);
 			dbSession.getTransaction().commit();
 			return id;
 		} catch (Exception e) {
@@ -135,7 +135,7 @@ public class DatabaseQuery<T> {
 			logger.debug("Start insert");
 			dbSession.beginTransaction();
 			for(Object entity : entityList) {
-				int id = (Integer) dbSession.save(entity);
+				Object id = dbSession.save(entity);
 			}
 			dbSession.getTransaction().commit();
 			return true;

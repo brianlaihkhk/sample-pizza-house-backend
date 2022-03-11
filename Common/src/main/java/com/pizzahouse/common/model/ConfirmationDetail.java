@@ -4,23 +4,23 @@ import java.util.List;
 
 public class ConfirmationDetail {
 	
-	private int pizzaTypeId;
-	private int subItemReferenceId;
+	private String pizzaTypeUuid;
+	private String subItemReferenceUuid;
 	private int subItemCategoryId;
 	private int quantity;
 	private float singlePrice;
 	private float subTotal;
-	public int getPizzaTypeId() {
-		return pizzaTypeId;
+	public String getPizzaTypeUuid() {
+		return pizzaTypeUuid;
 	}
-	public void setPizzaTypeId(int pizzaTypeId) {
-		this.pizzaTypeId = pizzaTypeId;
+	public void setPizzaTypeUuid(String pizzaTypeUuid) {
+		this.pizzaTypeUuid = pizzaTypeUuid;
 	}
-	public int getSubItemReferenceId() {
-		return subItemReferenceId;
+	public String getSubItemReferenceUuid() {
+		return subItemReferenceUuid;
 	}
-	public void setSubItemReferenceId(int subItemReferenceId) {
-		this.subItemReferenceId = subItemReferenceId;
+	public void setSubItemReferenceUuid(String subItemReferenceUuid) {
+		this.subItemReferenceUuid = subItemReferenceUuid;
 	}
 	public int getSubItemCategoryId() {
 		return subItemCategoryId;

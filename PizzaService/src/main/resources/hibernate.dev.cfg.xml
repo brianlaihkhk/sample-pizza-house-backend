@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>    
 <!DOCTYPE hibernate-configuration PUBLIC    
         "-//Hibernate/Hibernate Configuration DTD 5.3//EN"    
-        "http://www.hibernate.org/dtd/hibernate-configuration-5.3.dtd"> 
+        "http://www.hibernate.org/dtd/hibernate-configuration-5.3.dtd">  
 <hibernate-configuration>    
     <session-factory>    
 	    <property name="connection.provider_class">
-	      com.pizzahouse.order.config.EncryptedPasswordC3P0ConnectionProvider
+	      com.pizzahouse.service.config.EncryptedPasswordC3P0ConnectionProvider
 	    </property>
 	    <property name="hibernate.connection.encryptor_registered_name">
 	      strongHibernateStringEncryptor
 	    </property>
-        <property name="dialect">org.hibernate.dialect.MySQLDialect</property> 
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>      
         <property name="connection.url">jdbc:mysql://localhost/PIZZA_HOUSE</property>      
-        <property name="connection.username">u0HANZZhFsXaxzpCtQmqjOKljnzWzCpRFYulpmSSg5o=</property>      
-        <property name="connection.password">2AAmwQI2/lqNbQfOALFNB2UmjjBZoAAz</property>      
-        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="connection.username">pizzaservice</property>      
+        <property name="connection.password">BlueMonday#</property>      
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property> 
 		<property name="hibernate.c3p0.min_size">3</property>
 		<property name="hibernate.c3p0.max_size">5</property>
 		<property name="hibernate.c3p0.acquire_increment">1</property>
@@ -22,7 +22,5 @@
 	    <property name="current_session_context_class">thread</property>
 	    <property name="show_sql">true</property>
 	    <property name="format_sql">true</property>
-	    
-	    
     </session-factory>    
 </hibernate-configuration>  

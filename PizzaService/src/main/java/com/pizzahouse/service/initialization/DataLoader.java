@@ -36,17 +36,17 @@ public class DataLoader implements ApplicationRunner {
 		for (Pizza pizza : pizzaList) {
 			FlattenPizzaSize flattenPizzaSize = new FlattenPizzaSize();
 			flattenPizzaSize.setPizzaSize(pizza.getPizzaSize());
-			flattenPizzaSize.setPizzaSizeId(pizza.getPizzaSize().getSizeId());
+			flattenPizzaSize.setPizzaSizeId(pizza.getPizzaSize().getSizeUuid());
 			flattenPizzaSize.setPizzaType(pizza.getPizzaType());
-			flattenPizzaSize.setPizzaTypeId(pizza.getPizzaType().getTypeId());
-			pizzaSizeMap.put(pizza.getPizzaType().getTypeId() + "," + pizza.getPizzaSize().getSizeId(), flattenPizzaSize);
+			flattenPizzaSize.setPizzaTypeId(pizza.getPizzaType().getTypeUuid());
+			pizzaSizeMap.put(pizza.getPizzaType().getTypeUuid() + "," + pizza.getPizzaSize().getSizeUuid(), flattenPizzaSize);
 
 			FlattenPizzaTopping flattenPizzaTopping = new FlattenPizzaTopping();
 			flattenPizzaTopping.setPizzaTopping(pizza.getPizzaTopping());
-			flattenPizzaTopping.setPizzaToppingId(pizza.getPizzaTopping().getToppingId());
+			flattenPizzaTopping.setPizzaToppingId(pizza.getPizzaTopping().getToppingUuid());
 			flattenPizzaTopping.setPizzaType(pizza.getPizzaType());
-			flattenPizzaTopping.setPizzaTypeId(pizza.getPizzaType().getTypeId());
-			pizzaToppingMap.put(pizza.getPizzaType().getTypeId() + "," + pizza.getPizzaTopping().getToppingId(), flattenPizzaTopping);
+			flattenPizzaTopping.setPizzaTypeId(pizza.getPizzaType().getTypeUuid());
+			pizzaToppingMap.put(pizza.getPizzaType().getTypeUuid() + "," + pizza.getPizzaTopping().getToppingUuid(), flattenPizzaTopping);
 
 		}
 

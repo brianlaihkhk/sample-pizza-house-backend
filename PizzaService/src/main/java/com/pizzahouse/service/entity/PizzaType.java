@@ -12,9 +12,8 @@ import javax.persistence.Table;
 public class PizzaType {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="PIZZA_TYPE_ID")
-	private int typeId;
+	@Column(name="PIZZA_TYPE_UUID", nullable=false)
+	private String typeUuid;
 
     @Column(name="NAME", length=100, nullable=false)
 	private String name;
@@ -22,11 +21,11 @@ public class PizzaType {
     @Column(name="DESCRIPTION", length=1000, nullable=false)
 	private String description;
     
-	public int getTypeId() {
-		return typeId;
+	public String getTypeUuid() {
+		return typeUuid;
 	}
-	public void setTypeId(int typeId) {
-		this.typeId = typeId;
+	public void setTypeUuid(String typeUuid) {
+		this.typeUuid = typeUuid;
 	}
 	public String getName() {
 		return name;

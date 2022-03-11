@@ -4,7 +4,7 @@
   <groupId>com.pizzahouse</groupId>
   <artifactId>PizzaService</artifactId>
   <packaging>war</packaging>
-  <version>0.2-SNAPSHOT</version>
+  <version>0.3-SNAPSHOT</version>
   <name>Proxy Maven Webapp</name>
   <url>http://maven.apache.org</url>
     <parent>
@@ -33,6 +33,23 @@
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
 			<version>1.0.2.Final</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.jasypt</groupId>
+		    <artifactId>jasypt-hibernate5</artifactId>
+		    <version>1.9.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.github.ulisesbocchio</groupId>
+		    <artifactId>jasypt-spring-boot-starter</artifactId>
+		    <version>2.1.2</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-test</artifactId>
+		    <version>2.6.4</version>
+		    <scope>test</scope>
+		</dependency>
+
 	    <dependency>
 	      <groupId>org.hibernate</groupId>
 	      <artifactId>hibernate-core</artifactId>

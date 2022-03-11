@@ -8,5 +8,7 @@ public class Default {
 	
 	public static String confirmationServiceEntityPackagePath = "com.pizzahouse.order.entity";
 	public static String pizzaServiceEntityPackagePath = "com.pizzahouse.service.entity";
+	
+	public static String hibernateConfigFilename = "hibernate.cfg.xml";
 
 }
