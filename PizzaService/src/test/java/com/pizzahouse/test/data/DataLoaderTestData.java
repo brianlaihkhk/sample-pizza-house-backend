@@ -12,38 +12,41 @@ import com.pizzahouse.test.helper.PizzaHelper;
 
 public class DataLoaderTestData {
 
- 	private static PizzaType neapolitanPizza = PizzaHelper.createPizzaType(1, "Neapolitan Pizza", "The true original, topped with sauce from fresh tomatoes olive oil and minimal mozzarella.");
- 	private static PizzaType chicagoPizza = PizzaHelper.createPizzaType(2, "Chicago Pizza", "Prepared as the thick, classic deep-dish pizza. Thin-medium crust containing cornmeal or semolina.");
- 	private static PizzaType newYorkPizza = PizzaHelper.createPizzaType(3, "New-York Pizza", "Large, foldable slices, crispy outer crust. Traditional toppings of tomato sauce and mozzarella cheese.");
- 	private static PizzaType californiaPizza = PizzaHelper.createPizzaType(4, "California Pizza", "A single-serving, thin crust pizza. Popular due to its creative, non-traditional toppings, like chicken, egg, artichokes, salmon, feta or goat cheese.");
+ 	private static PizzaType neapolitanPizza = PizzaHelper.createPizzaType(OrderTestData.neapolianPizzaUuid, "Neapolitan Pizza", "The true original, topped with sauce from fresh tomatoes olive oil and minimal mozzarella.");
+ 	private static PizzaType chicagoPizza = PizzaHelper.createPizzaType(OrderTestData.chicagoPizzaUuid, "Chicago Pizza", "Prepared as the thick, classic deep-dish pizza. Thin-medium crust containing cornmeal or semolina.");
+ 	private static PizzaType newYorkPizza = PizzaHelper.createPizzaType(OrderTestData.newYorkPizzaUuid, "New-York Pizza", "Large, foldable slices, crispy outer crust. Traditional toppings of tomato sauce and mozzarella cheese.");
+ 	private static PizzaType californiaPizza = PizzaHelper.createPizzaType(OrderTestData.californiaPizzaUuid, "California Pizza", "A single-serving, thin crust pizza. Popular due to its creative, non-traditional toppings, like chicken, egg, artichokes, salmon, feta or goat cheese.");
 
- 	private static PizzaSize roundRegularSize = PizzaHelper.createPizzaSize(1, "Round Regular", "Round Regular Size", 99);
- 	private static PizzaSize roundLargeSize = PizzaHelper.createPizzaSize(2, "Round Large", "Round Large Size", 129);
- 	private static PizzaSize SquareRegularSize = PizzaHelper.createPizzaSize(3, "Square Regular", "Square Regular Size", 119);
- 	private static PizzaSize SquareLargeSize = PizzaHelper.createPizzaSize(4, "Square Large", "Square Large Size", 149);
+ 	private static PizzaSize roundRegularSize = PizzaHelper.createPizzaSize(OrderTestData.roundRegularUuid, "Round Regular", "Round Regular Size", 99);
+ 	private static PizzaSize roundLargeSize = PizzaHelper.createPizzaSize(OrderTestData.roundLargeUuid, "Round Large", "Round Large Size", 129);
+ 	private static PizzaSize squareRegularSize = PizzaHelper.createPizzaSize(OrderTestData.squareRegularUuid, "Square Regular", "Square Regular Size", 119);
+ 	private static PizzaSize squareLargeSize = PizzaHelper.createPizzaSize(OrderTestData.squareLargeUuid, "Square Large", "Square Large Size", 149);
 
- 	private static PizzaTopping chickenTopping = PizzaHelper.createPizzaTopping(1, "Chicken", "Chicken Topping", 15);
- 	private static PizzaTopping eggTopping = PizzaHelper.createPizzaTopping(2, "Egg", "Egg Topping", 15);
- 	private static PizzaTopping goatCheeseTopping = PizzaHelper.createPizzaTopping(3, "Goat Cheese", "Goat Cheese Topping", 25);
- 	private static PizzaTopping salmonTopping = PizzaHelper.createPizzaTopping(4, "Salmon", "Salmon Topping", 25);
- 	private static PizzaTopping beefTopping = PizzaHelper.createPizzaTopping(5, "Beef", "Beef Topping", 20);
+ 	private static PizzaTopping chickenTopping = PizzaHelper.createPizzaTopping(OrderTestData.chickenUuid, "Chicken", "Chicken Topping", 15);
+ 	private static PizzaTopping eggTopping = PizzaHelper.createPizzaTopping(OrderTestData.eggUuid, "Egg", "Egg Topping", 15);
+ 	private static PizzaTopping goatCheeseTopping = PizzaHelper.createPizzaTopping(OrderTestData.goatCheeseUuid, "Goat Cheese", "Goat Cheese Topping", 25);
+ 	private static PizzaTopping salmonTopping = PizzaHelper.createPizzaTopping(OrderTestData.salmonUuid, "Salmon", "Salmon Topping", 25);
+ 	private static PizzaTopping beefTopping = PizzaHelper.createPizzaTopping(OrderTestData.beefUuid, "Beef", "Beef Topping", 20);
 
 	/**
 	 * Generate PizzaSizeMap Test Data Set 1
 	 */
  	public static Map<String, FlattenPizzaSize> generatePizzaSizeMapSet1(){
  		Map<String, FlattenPizzaSize> map = new HashMap<String, FlattenPizzaSize>();
- 		map.put("1,1", PizzaHelper.createPizzaSizeFlatten(neapolitanPizza, roundRegularSize));
- 		map.put("1,2", PizzaHelper.createPizzaSizeFlatten(neapolitanPizza, roundLargeSize));
- 		map.put("1,4", PizzaHelper.createPizzaSizeFlatten(neapolitanPizza, SquareLargeSize));
- 		map.put("2,1", PizzaHelper.createPizzaSizeFlatten(chicagoPizza, roundRegularSize));
- 		map.put("2,4", PizzaHelper.createPizzaSizeFlatten(chicagoPizza, SquareLargeSize));
- 		map.put("3,1", PizzaHelper.createPizzaSizeFlatten(newYorkPizza, roundRegularSize));
- 		map.put("3,2", PizzaHelper.createPizzaSizeFlatten(newYorkPizza, roundLargeSize));
- 		map.put("4,1", PizzaHelper.createPizzaSizeFlatten(californiaPizza, roundRegularSize));
- 		map.put("4,2", PizzaHelper.createPizzaSizeFlatten(californiaPizza, roundLargeSize));
- 		map.put("4,3", PizzaHelper.createPizzaSizeFlatten(californiaPizza, SquareRegularSize));
- 		map.put("4,4", PizzaHelper.createPizzaSizeFlatten(californiaPizza, SquareLargeSize));
+ 		map.put(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.roundRegularUuid, PizzaHelper.createPizzaSizeFlatten(neapolitanPizza, roundRegularSize));
+ 		map.put(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.roundLargeUuid, PizzaHelper.createPizzaSizeFlatten(neapolitanPizza, roundLargeSize));
+ 		map.put(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.squareLargeUuid, PizzaHelper.createPizzaSizeFlatten(neapolitanPizza, squareLargeSize));
+ 		map.put(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.squareRegularUuid, PizzaHelper.createPizzaSizeFlatten(neapolitanPizza, squareRegularSize));
+ 		
+ 		map.put(OrderTestData.chicagoPizzaUuid + "," + OrderTestData.roundRegularUuid, PizzaHelper.createPizzaSizeFlatten(chicagoPizza, roundRegularSize));
+ 		
+ 		map.put(OrderTestData.newYorkPizzaUuid + "," + OrderTestData.roundRegularUuid, PizzaHelper.createPizzaSizeFlatten(newYorkPizza, roundRegularSize));
+ 		map.put(OrderTestData.newYorkPizzaUuid + "," + OrderTestData.roundLargeUuid, PizzaHelper.createPizzaSizeFlatten(newYorkPizza, roundLargeSize));
+ 		
+ 		map.put(OrderTestData.californiaPizzaUuid + "," + OrderTestData.roundRegularUuid, PizzaHelper.createPizzaSizeFlatten(californiaPizza, roundRegularSize));
+ 		map.put(OrderTestData.californiaPizzaUuid + "," + OrderTestData.roundLargeUuid, PizzaHelper.createPizzaSizeFlatten(californiaPizza, roundLargeSize));
+ 		map.put(OrderTestData.californiaPizzaUuid + "," + OrderTestData.squareRegularUuid, PizzaHelper.createPizzaSizeFlatten(californiaPizza, squareRegularSize));
+ 		map.put(OrderTestData.californiaPizzaUuid + "," + OrderTestData.squareLargeUuid, PizzaHelper.createPizzaSizeFlatten(californiaPizza, squareLargeSize));
  		return map;
  	}
  
@@ -52,21 +55,24 @@ public class DataLoaderTestData {
 	 */
  	public static Map<String, FlattenPizzaTopping> generatePizzaToppingMapSet1(){
  		Map<String, FlattenPizzaTopping> map = new HashMap<String, FlattenPizzaTopping>();
- 		map.put("1,1", PizzaHelper.createPizzaToppingFlatten(neapolitanPizza, chickenTopping));
- 		map.put("1,2", PizzaHelper.createPizzaToppingFlatten(neapolitanPizza, eggTopping));
- 		map.put("1,3", PizzaHelper.createPizzaToppingFlatten(neapolitanPizza, goatCheeseTopping));
- 		map.put("1,4", PizzaHelper.createPizzaToppingFlatten(neapolitanPizza, salmonTopping));
- 		map.put("1,5", PizzaHelper.createPizzaToppingFlatten(neapolitanPizza, beefTopping));
- 		map.put("2,1", PizzaHelper.createPizzaToppingFlatten(chicagoPizza, chickenTopping));
- 		map.put("2,2", PizzaHelper.createPizzaToppingFlatten(chicagoPizza, eggTopping));
- 		map.put("2,4", PizzaHelper.createPizzaToppingFlatten(chicagoPizza, salmonTopping));
- 		map.put("3,1", PizzaHelper.createPizzaToppingFlatten(newYorkPizza, chickenTopping));
- 		map.put("3,2", PizzaHelper.createPizzaToppingFlatten(newYorkPizza, eggTopping));
- 		map.put("3,3", PizzaHelper.createPizzaToppingFlatten(newYorkPizza, salmonTopping));
- 		map.put("4,1", PizzaHelper.createPizzaToppingFlatten(californiaPizza, chickenTopping));
- 		map.put("4,2", PizzaHelper.createPizzaToppingFlatten(californiaPizza, eggTopping));
- 		map.put("4,3", PizzaHelper.createPizzaToppingFlatten(californiaPizza, goatCheeseTopping));
- 		map.put("4,5", PizzaHelper.createPizzaToppingFlatten(californiaPizza, beefTopping));
+ 		map.put(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.chickenUuid, PizzaHelper.createPizzaToppingFlatten(neapolitanPizza, chickenTopping));
+ 		map.put(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.eggUuid, PizzaHelper.createPizzaToppingFlatten(neapolitanPizza, eggTopping));
+ 		map.put(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.goatCheeseUuid, PizzaHelper.createPizzaToppingFlatten(neapolitanPizza, goatCheeseTopping));
+ 		map.put(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.salmonUuid, PizzaHelper.createPizzaToppingFlatten(neapolitanPizza, salmonTopping));
+ 		map.put(OrderTestData.neapolianPizzaUuid + "," + OrderTestData.beefUuid, PizzaHelper.createPizzaToppingFlatten(neapolitanPizza, beefTopping));
+ 		
+ 		map.put(OrderTestData.chicagoPizzaUuid + "," + OrderTestData.chickenUuid, PizzaHelper.createPizzaToppingFlatten(chicagoPizza, chickenTopping));
+ 		map.put(OrderTestData.chicagoPizzaUuid + "," + OrderTestData.eggUuid, PizzaHelper.createPizzaToppingFlatten(chicagoPizza, eggTopping));
+ 		map.put(OrderTestData.chicagoPizzaUuid + "," + OrderTestData.salmonUuid, PizzaHelper.createPizzaToppingFlatten(chicagoPizza, salmonTopping));
+ 		
+ 		map.put(OrderTestData.newYorkPizzaUuid + "," + OrderTestData.chickenUuid, PizzaHelper.createPizzaToppingFlatten(newYorkPizza, chickenTopping));
+ 		map.put(OrderTestData.newYorkPizzaUuid + "," + OrderTestData.eggUuid, PizzaHelper.createPizzaToppingFlatten(newYorkPizza, eggTopping));
+ 		map.put(OrderTestData.newYorkPizzaUuid + "," + OrderTestData.goatCheeseUuid, PizzaHelper.createPizzaToppingFlatten(newYorkPizza, goatCheeseTopping));
+ 		
+ 		map.put(OrderTestData.californiaPizzaUuid + "," + OrderTestData.chickenUuid, PizzaHelper.createPizzaToppingFlatten(californiaPizza, chickenTopping));
+ 		map.put(OrderTestData.californiaPizzaUuid + "," + OrderTestData.eggUuid, PizzaHelper.createPizzaToppingFlatten(californiaPizza, eggTopping));
+ 		map.put(OrderTestData.californiaPizzaUuid + "," + OrderTestData.goatCheeseUuid, PizzaHelper.createPizzaToppingFlatten(californiaPizza, goatCheeseTopping));
+ 		map.put(OrderTestData.californiaPizzaUuid + "," + OrderTestData.beefUuid, PizzaHelper.createPizzaToppingFlatten(californiaPizza, beefTopping));
  		return map;
  	}
 }

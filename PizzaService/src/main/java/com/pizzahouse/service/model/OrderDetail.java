@@ -4,36 +4,36 @@ import java.util.List;
 
 public class OrderDetail {
 	
-	private int pizzaTypeId;
+	private String pizzaTypeUuid;
 	
-	private int pizzaSizeId;
+	private String pizzaSizeUuid;
 	
-	private List<Integer> pizzaToppingIdList;
+	private List<String> pizzaToppingUuidList;
 	
 	private int quantity;
 
-	public int getPizzaTypeId() {
-		return pizzaTypeId;
+	public String getPizzaTypeUuid() {
+		return pizzaTypeUuid;
 	}
 
-	public void setPizzaTypeId(int pizzaTypeId) {
-		this.pizzaTypeId = pizzaTypeId;
+	public void setPizzaTypeUuid(String pizzaTypeUuid) {
+		this.pizzaTypeUuid = pizzaTypeUuid;
 	}
 
-	public int getPizzaSizeId() {
-		return pizzaSizeId;
+	public String getPizzaSizeUuid() {
+		return pizzaSizeUuid;
 	}
 
-	public void setPizzaSizeId(int pizzaSizeId) {
-		this.pizzaSizeId = pizzaSizeId;
+	public void setPizzaSizeUuid(String pizzaSizeUuid) {
+		this.pizzaSizeUuid = pizzaSizeUuid;
 	}
 
-	public List<Integer> getPizzaToppingIdList() {
-		return pizzaToppingIdList;
+	public List<String> getPizzaToppingUuidList() {
+		return pizzaToppingUuidList;
 	}
 
-	public void setPizzaToppingIdList(List<Integer> pizzaToppingIdList) {
-		this.pizzaToppingIdList = pizzaToppingIdList;
+	public void setPizzaToppingUuidList(List<String> pizzaToppingUuidList) {
+		this.pizzaToppingUuidList = pizzaToppingUuidList;
 	}
 
 	public int getQuantity() {

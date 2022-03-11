@@ -10,13 +10,18 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import com.pizzahouse.common.model.ErrorDetail;
 import com.pizzahouse.service.entity.Session;
@@ -150,13 +155,6 @@ public class Router extends SpringBootServletInitializer {
 			response.setSuccess(false);
 			response.setError(error);
 			logger.warn("[RollbackException] transaction has been rejected and rolled back" + e.getMessage());
-//		} catch(DatabaseUnavailableException e) {
-//			error.setErrorCode(ErrorCode.databaseUnavailableException);
-//			error.setErrorMessage("Database connection error, cannot obtain DB session");
-//			
-//			response.setSuccess(false);
-//			response.setError(error);
-//			logger.error("[DatabaseUnavailableException] Database connection error, cannot obtain DB session" + e.getMessage());
 		} catch(UserProfileException e) {
 			error.setErrorCode(ErrorCode.userProfileException);
 			error.setErrorMessage(e.getMessage());
@@ -192,19 +190,19 @@ public class Router extends SpringBootServletInitializer {
 	 */
 	@RequestMapping(value = "order", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Response<String> submitOrder (@RequestBody Order order) {
+	public Response<String> submitOrder (@RequestHeader("uuid") String userUuid, @RequestHeader("session") String session, @RequestBody Order order) {
 
 		Response<String> response = new Response<String>();
 		ErrorDetail error = new ErrorDetail();
 		
 		try {
-			logger.info("calling PizzaHouse /order endpoint : " + order.getUserId());
-			if (order == null || order.getSession() == null) {
+			logger.info("calling PizzaHouse /order endpoint : " + userUuid);
+			if (order == null) {
 				throw new OrderFullfillmentException("Required parameter cannot be empty");
 			}
 			
-			securityService.checkUserTokenByUserId(order.getUserId(), order.getSession(), Default.sessionTokenExpirationDays);
-			response = orderService.submitOrder(order.getUserId(), order);
+			securityService.checkUserTokenByUserUuid(userUuid, session, Default.sessionTokenExpirationDays);
+			response = orderService.submitOrder(userUuid, order);
 			logger.info("Finish calling PizzaHouse /order endpoint : " + mapper.writeValueAsString(response));
 		} catch(RollbackException e) {
 			error.setErrorCode(ErrorCode.rollbackException);
@@ -246,19 +244,21 @@ public class Router extends SpringBootServletInitializer {
 		return response;
 	}
 	
-//	@RequestMapping(value = "test", method = RequestMethod.GET, produces = "application/json")
-//	@ResponseBody
-//	public Response<Session> test () throws NoSuchAlgorithmException, UserProfileException {
-//
-//		logger.info("calling PizzaHouse /test endpoint");
-//		long epoch = (System.currentTimeMillis() / 1000); 
-//		String james = "james" + String.valueOf(epoch);
-//
-//    	Response<Session> jamesResponse = userService.createUser(james, "james", "james", "ames");
-//    	return jamesResponse;
-//	}
-//	
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	@ExceptionHandler({ Exception.class })
+	public Response<String> pathNotFound (RuntimeException ex, WebRequest request) {
 
+		Response<String> response = new Response<String>();
+		ErrorDetail error = new ErrorDetail();
+		error.setErrorCode(ErrorCode.baseException);
+		error.setErrorMessage("Path not found");
+		
+		response.setSuccess(false);
+		response.setError(error);
+		
+		return response;
+	}
+	
     public static void main(String[] args) {
     	System.out.println("WebConfiguration run init");
 

@@ -13,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -42,12 +43,12 @@ public class UserService {
 
 		if (user != null && user.getPassword() != null) {
 			if (!user.getPassword().equals(password)) {
-				throw new UnauthorizedException("Invalid password for user");
+				throw new UnauthorizedException("Invalid username/password for user");
 			}
 			response.setSuccess(true);
 			response.setPayload(securityService.refreshSession(user));
 		} else {
-			throw new UnauthorizedException("Cannot obtain user by username");
+			throw new UnauthorizedException("Invalid username/password for user");
 		}
 		
 		return response;
@@ -64,14 +65,14 @@ public class UserService {
 	 */
 	public Response<Session> createUser (String username, String firstName, String lastName, String password) throws NoSuchAlgorithmException, UserProfileException {
 		Response<Session> response = new Response<Session>();
-		logger.info("test");
 
 		User user = new User (username, firstName, lastName, password);
-		int id = userQuery.insert(user);
+		user.setUuid(UUID.randomUUID().toString());
+		String id = (String) userQuery.insert(user);
 	
-		if (id > 0) {
+		if (id != null && !id.isEmpty()) {
 			response.setSuccess(true);
-			response.setPayload(securityService.createSession(user.getId()));
+			response.setPayload(securityService.createSession(user.getUuid()));
 		} else {
 			throw new UserProfileException("Unable to create new user. User may be registered or username may be taken by other users");
 		}

@@ -4,11 +4,16 @@
         "http://www.hibernate.org/dtd/hibernate-configuration-5.3.dtd">  
 <hibernate-configuration>    
     <session-factory>    
-              
+	    <property name="connection.provider_class">
+	      com.pizzahouse.service.config.EncryptedPasswordC3P0ConnectionProvider
+	    </property>
+	    <property name="hibernate.connection.encryptor_registered_name">
+	      strongHibernateStringEncryptor
+	    </property>
         <property name="dialect">org.hibernate.dialect.MySQLDialect</property>      
         <property name="connection.url">jdbc:mysql://localhost/PIZZA_HOUSE</property>      
-        <property name="connection.username">pizzaservice</property>      
-        <property name="connection.password">BlueMonday#</property>      
+        <property name="connection.username">oe8D4WXT2ffTaMY4cs+67oz02RzSMRcF</property>      
+        <property name="connection.password">mgd3GuNeAHxHr+hsFPGJwVuFw2wQuRgn</property>      
         <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property> 
 		<property name="hibernate.c3p0.min_size">3</property>
 		<property name="hibernate.c3p0.max_size">5</property>

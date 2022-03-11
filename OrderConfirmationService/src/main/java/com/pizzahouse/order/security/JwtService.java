@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pizzahouse.common.config.Connection;
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.JwtIssuerNotMatchException;
 import com.pizzahouse.common.exception.JwtMessageExpiredException;
+import com.pizzahouse.order.config.Connection;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -29,6 +29,8 @@ public class JwtService<T> {
 	ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	protected Logger logger;
+	@Autowired
+	protected Connection connection;
 	
 	/**
 	 * Generate encrypted Jwt message
@@ -97,14 +99,14 @@ public class JwtService<T> {
 	    long nowMillis = System.currentTimeMillis();
 	    Date now = new Date(nowMillis);
 		
-		Jws<Claims> jwsClaims = decodeJWT(jwt, Connection.serverJwtSecretKey);
+		Jws<Claims> jwsClaims = decodeJWT(jwt, connection.getServerJwtSecretKey());
 		Claims claims = jwsClaims.getBody();
 		
 		if (claims.getExpiration().before(now)) {
 			throw new JwtMessageExpiredException("Encoded message has been expired");
 		}
 
-		if (!claims.getIssuer().trim().equals(Connection.serverIssuerName.trim())) {
+		if (!claims.getIssuer().trim().equals(connection.getServerIssuerName().trim())) {
 			throw new JwtIssuerNotMatchException("Issuer of the encoded message does not match");
 		}
 		

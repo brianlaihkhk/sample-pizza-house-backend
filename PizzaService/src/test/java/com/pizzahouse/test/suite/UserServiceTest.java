@@ -8,17 +8,22 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.pizzahouse.common.config.Default;
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.UnauthorizedException;
 import com.pizzahouse.common.exception.UserProfileException;
-import com.pizzahouse.service.initialization.PropertiesLoader;
+import com.pizzahouse.service.initialization.DataLoader;
 import com.pizzahouse.service.initialization.WebConfiguration;
 import com.pizzahouse.service.security.SecurityService;
+import com.pizzahouse.test.data.DataLoaderTestData;
 import com.pizzahouse.test.data.UserTestData;
 import com.pizzahouse.common.model.Response;
+import com.pizzahouse.service.config.Connection;
 import com.pizzahouse.service.controller.UserService;
 import com.pizzahouse.service.database.DatabaseQuery;
 import com.pizzahouse.service.entity.Session;
@@ -31,6 +36,15 @@ import java.security.NoSuchAlgorithmException;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath*:/applicationContext.xml")
+@TestPropertySource(properties = {
+	    "pizzaServiceHost=http://localhost:8080/PizzaService/",
+	    "orderConfirmationServiceHost=http://localhost:8080/OrderConfirmationService/",
+	    "serverJwtSecretKey=bcbac5b821435e0be3e59d6abdac12a94c8248288a6ebd76a56a01fbca7c0cdf",
+	    "serverIssuerName=cdc43c7e9089a41897b101de70f878bcc575c839f4ad057605a3335f6a601133",
+	    "jwtTtlMilliseconds=10000",
+	    "orderConfirmationServiceName=confirm",
+	    "jasypt.encryptor.password=f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454"
+	})
 public class UserServiceTest {
 	@Autowired
 	protected DatabaseQuery<User> userQuery;
@@ -43,16 +57,19 @@ public class UserServiceTest {
 	@Autowired
 	protected Logger logger;
 	@Autowired
-	protected PropertiesLoader propertiesLoader;
+	protected Connection connection;
 	
+	
+    @BeforeClass
+    public static void instantiate() {
+       	Default.hibernateConfigFilename = "hibernate.dev.cfg.xml";
+    }
+    
 	/**
 	 * Validate DB connection has been established before UserService Test
 	 */
     @Test
     public void _00_initialize() throws Exception {
-    	propertiesLoader.setConnectionInputStream(this.getClass().getClassLoader().getResourceAsStream("connection.properties"));
-    	propertiesLoader.setDefaultInputStream(this.getClass().getClassLoader().getResourceAsStream("default.properties"));
-    	propertiesLoader.populate();
     	assertEquals(true, userQuery.checkConnection());
     }
     
@@ -88,22 +105,22 @@ public class UserServiceTest {
     	Response<Session> jamesResponse = userService.createUser(UserTestData.james.getUsername(), UserTestData.james.getFirstName(), UserTestData.james.getLastName(), UserTestData.james.getPassword());
     	assertEquals(true, jamesResponse.isSuccess());
     	UserTestData.jamesSession = jamesResponse.getPayload();
-    	UserTestData.jamesUserId = jamesResponse.getPayload().getUserId();
+    	UserTestData.jamesUserId = jamesResponse.getPayload().getUserUuid();
     	
     	Response<Session> janetResponse = userService.createUser(UserTestData.janet.getUsername(), UserTestData.janet.getFirstName(), UserTestData.janet.getLastName(), UserTestData.janet.getPassword());
     	assertEquals(true, janetResponse.isSuccess());
     	UserTestData.janetSession = janetResponse.getPayload();
-    	UserTestData.janetUserId = janetResponse.getPayload().getUserId();
+    	UserTestData.janetUserId = janetResponse.getPayload().getUserUuid();
 
     	Response<Session> annaResponse = userService.createUser(UserTestData.anna.getUsername(), UserTestData.anna.getFirstName(), UserTestData.anna.getLastName(), UserTestData.anna.getPassword());
     	assertEquals(true, annaResponse.isSuccess());
     	UserTestData.annaSession = annaResponse.getPayload();
-    	UserTestData.annaUserId = annaResponse.getPayload().getUserId();
+    	UserTestData.annaUserId = annaResponse.getPayload().getUserUuid();
 
     	Response<Session> peterResponse = userService.createUser(UserTestData.peter.getUsername(), UserTestData.peter.getFirstName(), UserTestData.peter.getLastName(), UserTestData.peter.getPassword());
     	assertEquals(true, peterResponse.isSuccess());
     	UserTestData.peterSession = peterResponse.getPayload();
-    	UserTestData.peterUserId = peterResponse.getPayload().getUserId();
+    	UserTestData.peterUserId = peterResponse.getPayload().getUserUuid();
 
     }
     
@@ -123,10 +140,12 @@ public class UserServiceTest {
 
 	/**
 	 * Test user cannot login after expiration
+	 * @throws UserProfileException 
+	 * @throws DatabaseUnavailableException 
 	 */
     @Test(expected = UnauthorizedException.class)
-    public void _03_testUserLoginExpirationByUserId() throws UnauthorizedException {
-    	securityService.checkUserTokenByUserId(UserTestData.jamesUserId, UserTestData.jamesSession.getToken(), (long) 0);
+    public void _03_testUserLoginExpirationByUserId() throws UnauthorizedException, DatabaseUnavailableException, UserProfileException {
+    	securityService.checkUserTokenByUserUuid(UserTestData.jamesUserId, UserTestData.jamesSession.getToken(), (long) 0);
     }
 
 	/**
@@ -150,9 +169,11 @@ public class UserServiceTest {
 
 	/**
 	 * Test user cannot login by incorrect session token
+	 * @throws UserProfileException 
+	 * @throws DatabaseUnavailableException 
 	 */
     @Test(expected = UnauthorizedException.class)
-    public void _07_testUserIdLoginByIncorrectSessionToken() throws UnauthorizedException {
-    	securityService.checkUserTokenByUserId(UserTestData.jamesUserId, "123abc", (long) 30);
+    public void _07_testUserIdLoginByIncorrectSessionToken() throws UnauthorizedException, DatabaseUnavailableException, UserProfileException {
+    	securityService.checkUserTokenByUserUuid(UserTestData.jamesUserId, "123abc", (long) 30);
     } 
 }

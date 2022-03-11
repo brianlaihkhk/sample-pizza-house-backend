@@ -43,7 +43,7 @@ public class SecurityService {
 	 */
 	public boolean checkUserTokenByUsername (String username, String sessionToken, long expirationDay) throws UnauthorizedException, UserProfileException, DatabaseUnavailableException {
 		User user = getUserByUsername(username);
-		return checkUserTokenByUserId(user.getId(), sessionToken, expirationDay);
+		return checkUserTokenByUserUuid(user.getUuid(), sessionToken, expirationDay);
 	}
 	
 	/**
@@ -51,11 +51,13 @@ public class SecurityService {
 	 * @param userId User id of the user
 	 * @param token Token input to validate
 	 * @return True if user token is verified and not expired, otherwise throw Exception
+	 * @throws UserProfileException 
+	 * @throws DatabaseUnavailableException 
 	 */
-	public boolean checkUserTokenByUserId (int userId, String sessionToken, long expirationDay) throws UnauthorizedException {
+	public boolean checkUserTokenByUserUuid (String userUuid, String sessionToken, long expirationDay) throws UnauthorizedException, DatabaseUnavailableException, UserProfileException {
 		long epochValidTime = (System.currentTimeMillis() / 1000) - expirationDay * 24 * 3600;	
 		
-		Session session = getSession(userId);
+		Session session = getSession(userUuid);
 				
 		if (session != null && sessionToken != null && session.getToken().equals(sessionToken)) {
 			if (session.getCreationEpochTime() < epochValidTime) {
@@ -95,44 +97,64 @@ public class SecurityService {
 	 * @param user User object of the user
 	 * @return Session object if found, otherwise null
 	 */
-	public Session getSession (User user) {
-		return getSession(user.getId());
+	public Session getSession (User user) throws DatabaseUnavailableException, UserProfileException {
+		return getSession(user.getUuid());
 	}
 
 	/**
 	 * Get Session object of the user
 	 * @param userId Userid of the user
 	 * @return Session object if found, otherwise null
+	 * @throws DatabaseUnavailableException 
 	 */
-	public Session getSession (int userId) {
-		return sessionQuery.selectById(Session.class, userId);
-	}
+	public Session getSession (String userUuid) throws DatabaseUnavailableException, UserProfileException {
+		Predicate[] predicates = new Predicate[1];
 
+		CriteriaBuilder criteriaBuilder = sessionQuery.getCriteriaBuilder();
+		CriteriaQuery<Session> cq = criteriaBuilder.createQuery(Session.class);
+		Root<Session> root = cq.from(Session.class);
+		predicates[0] = criteriaBuilder.equal(root.get("userUuid"), userUuid);
+		CriteriaQuery<Session> query = cq.select(root).where(predicates);
+		
+		List<Session> result = sessionQuery.query(query);
+		
+		if (result.size() == 1) {
+			return result.get(0);
+		} else {
+			throw new UserProfileException("Cannot find the user specified");
+		}
+
+	}
+	
 	/**
 	 * Set Session object of the user
 	 * @param user User object of the user
 	 * @return Session object if transaction complete, otherwise throw exception
+	 * @throws UserProfileException 
+	 * @throws DatabaseUnavailableException 
 	 */
-	public Session refreshSession (User user) throws NoSuchAlgorithmException {
-		return refreshSession(user.getId());
+	public Session refreshSession (User user) throws NoSuchAlgorithmException, DatabaseUnavailableException, UserProfileException {
+		return refreshSession(user.getUuid());
 	}
 	
 	/**
 	 * Set Session object of the user by user id
 	 * @param user Userid of the user
 	 * @return Session object if transaction complete, otherwise throw exception
+	 * @throws UserProfileException 
+	 * @throws DatabaseUnavailableException 
 	 */
-	public Session refreshSession (int userId) throws NoSuchAlgorithmException {
+	public Session refreshSession (String userUuid) throws NoSuchAlgorithmException, DatabaseUnavailableException, UserProfileException {
 		long epoch = (System.currentTimeMillis() / 1000);
 		String token = generateToken();
-		Session session = sessionQuery.selectById(Session.class, userId);
+		Session session = getSession(userUuid);
 		
 		logger.debug(session.toString());
 		if (session != null && session.getToken().length() > 0) {
 			session.setToken(token);
 			sessionQuery.insertOrUpdate(session);
 		} else {
-			session = createSession(userId);
+			session = createSession(userUuid);
 		}
 		return (Session) SerializationUtils.clone(session);
 
@@ -143,14 +165,14 @@ public class SecurityService {
 	 * @param user Userid of the user
 	 * @return Session object if transaction complete, otherwise throw exception
 	 */
-	public Session createSession (int userId) throws NoSuchAlgorithmException {
+	public Session createSession (String userUuid) throws NoSuchAlgorithmException {
 		long epoch = (System.currentTimeMillis() / 1000);
 		String token = generateToken();
 		Session session = new Session();
 		session.setCreationEpochTime(epoch);
 		session.setCreationTime(new Date(epoch * 1000));
 		session.setToken(token);
-		session.setUserId(userId);
+		session.setUserUuid(userUuid);
 		sessionQuery.insert(session);
 		return (Session) SerializationUtils.clone(session);
 	}

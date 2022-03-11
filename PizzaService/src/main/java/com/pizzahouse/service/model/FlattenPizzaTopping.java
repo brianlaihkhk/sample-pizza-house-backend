@@ -7,28 +7,28 @@ import com.pizzahouse.service.entity.PizzaType;
 
 public class FlattenPizzaTopping {
 
-	private int pizzaTypeId;
+	private String pizzaTypeUuid;
 
-	private int pizzaToppingId;
+	private String pizzaToppingUuid;
 	
 	private PizzaType pizzaType;
    
 	private PizzaTopping pizzaTopping;
 
-	public int getPizzaTypeId() {
-		return pizzaTypeId;
+	public String getPizzaTypeId() {
+		return pizzaTypeUuid;
 	}
 
-	public void setPizzaTypeId(int pizzaTypeId) {
-		this.pizzaTypeId = pizzaTypeId;
+	public void setPizzaTypeId(String pizzaTypeUuid) {
+		this.pizzaTypeUuid = pizzaTypeUuid;
 	}
 
-	public int getPizzaToppingId() {
-		return pizzaToppingId;
+	public String getPizzaToppingId() {
+		return pizzaToppingUuid;
 	}
 
-	public void setPizzaToppingId(int pizzaToppingId) {
-		this.pizzaToppingId = pizzaToppingId;
+	public void setPizzaToppingId(String pizzaToppingUuid) {
+		this.pizzaToppingUuid = pizzaToppingUuid;
 	}
 
 	public PizzaType getPizzaType() {

@@ -15,11 +15,11 @@ public class OrderHelper {
 	 * @param quantity How many pizza with this configuration to buy
 	 * @return OrderDetail object
 	 */
- 	public static OrderDetail createOrderDetail(int pizzaTypeId, int pizzaSizeId, List<Integer> pizzaToppingIdList, int quantity){
+ 	public static OrderDetail createOrderDetail(String pizzaTypeId, String pizzaSizeId, List<String> pizzaToppingIdList, int quantity){
  		OrderDetail orderDetail = new OrderDetail();
- 		orderDetail.setPizzaSizeId(pizzaSizeId);
- 		orderDetail.setPizzaTypeId(pizzaTypeId);
- 		orderDetail.setPizzaToppingIdList(pizzaToppingIdList);
+ 		orderDetail.setPizzaSizeUuid(pizzaSizeId);
+ 		orderDetail.setPizzaTypeUuid(pizzaTypeId);
+ 		orderDetail.setPizzaToppingUuidList(pizzaToppingIdList);
  		orderDetail.setQuantity(quantity);
 
  		return orderDetail;

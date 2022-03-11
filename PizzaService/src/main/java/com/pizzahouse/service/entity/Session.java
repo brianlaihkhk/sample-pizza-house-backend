@@ -13,8 +13,8 @@ import javax.persistence.Table;
 public class Session implements Serializable {
 
 	@Id
-	@Column(name="USER_ID", nullable=false)
-	private int userId;	
+	@Column(name="USER_UUID", nullable=false)
+	private String userUuid;	
 
 	@Column(name="SESSION_TOKEN", nullable=false)
 	private String token;
@@ -25,12 +25,12 @@ public class Session implements Serializable {
 	@Column(name="CREATION_EPOCH_TIME")
 	private long creationEpochTime;
 	
-    public int getUserId() {
-		return userId;
+    public String getUserUuid() {
+		return userUuid;
 	}
 
-	public void setUserId(int id) {
-		this.userId = id;
+	public void setUserUuid(String userUuid) {
+		this.userUuid = userUuid;
 	}
 	
 	public String getToken() {

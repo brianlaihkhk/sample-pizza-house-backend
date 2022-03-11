@@ -5,25 +5,29 @@ import static org.junit.Assert.assertEquals;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
+import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.pizzahouse.common.config.Default;
 import com.pizzahouse.common.exception.DatabaseUnavailableException;
 import com.pizzahouse.common.exception.UserProfileException;
 import com.pizzahouse.common.model.Response;
+import com.pizzahouse.service.config.Connection;
 import com.pizzahouse.service.controller.OrderService;
 import com.pizzahouse.service.database.DatabaseQuery;
 import com.pizzahouse.service.entity.Pizza;
 import com.pizzahouse.service.entity.Session;
 import com.pizzahouse.service.entity.User;
 import com.pizzahouse.service.initialization.DataLoader;
-import com.pizzahouse.service.initialization.PropertiesLoader;
 import com.pizzahouse.service.model.FlattenPizzaSize;
 import com.pizzahouse.service.model.FlattenPizzaTopping;
 import com.pizzahouse.test.data.UserTestData;
@@ -31,6 +35,14 @@ import com.pizzahouse.test.data.UserTestData;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath*:/applicationContext.xml")
+@TestPropertySource(properties = {
+	    "pizzaServiceHost=http://localhost:8080/PizzaService/",
+	    "orderConfirmationServiceHost=http://localhost:8080/OrderConfirmationService/",
+	    "serverJwtSecretKey=bcbac5b821435e0be3e59d6abdac12a94c8248288a6ebd76a56a01fbca7c0cdf",
+	    "serverIssuerName=cdc43c7e9089a41897b101de70f878bcc575c839f4ad057605a3335f6a601133",
+	    "jwtTtlMilliseconds=10000",
+	    "orderConfirmationServiceName=confirm"
+	})
 public class PizzaMapTest {
 	@Autowired
 	protected Logger logger;
@@ -39,7 +51,12 @@ public class PizzaMapTest {
 	@Autowired
 	protected DataLoader dataLoader;
 	@Autowired
-	protected PropertiesLoader propertiesLoader;
+	protected Connection connection;
+	
+    @BeforeClass
+    public static void instantiate() {
+       	Default.hibernateConfigFilename = "hibernate.dev.cfg.xml";
+    }
 	
 	/**
 	 * Validate DB connection has been established before UserService Test
@@ -47,9 +64,6 @@ public class PizzaMapTest {
 	 */
     @Test
     public void _00_initialize() throws Exception {
-    	propertiesLoader.setConnectionInputStream(this.getClass().getClassLoader().getResourceAsStream("connection.properties"));
-    	propertiesLoader.setDefaultInputStream(this.getClass().getClassLoader().getResourceAsStream("default.properties"));
-    	propertiesLoader.populate();
     	assertEquals(true, userQuery.checkConnection());
     }
     

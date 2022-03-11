@@ -17,10 +17,12 @@ public class UserTestData {
 	public static Session janetSession = null;
 	public static Session annaSession = null;
 	public static Session peterSession = null;
-	public static int jamesUserId = 0;
-	public static int janetUserId = 0;
-	public static int annaUserId = 0;
-	public static int peterUserId = 0;
+	public static String jamesUserId = "0";
+	public static String janetUserId = "0";
+	public static String annaUserId = "0";
+	public static String peterUserId = "0";
+	public static String jamesUuid = "e1f1c360-0816-43ca-a171-e016c817588d";
+	public static String janetUuid = "fa6d7ea5-d0c3-4e95-8d73-7c95ca439332";
 
 
 }

@@ -7,16 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.WebRequest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pizzahouse.common.config.Connection;
 import com.pizzahouse.common.config.ErrorCode;
 import com.pizzahouse.common.exception.JwtIssuerNotMatchException;
 import com.pizzahouse.common.exception.JwtMessageExpiredException;
@@ -24,6 +27,7 @@ import com.pizzahouse.common.exception.OrderFullfillmentException;
 import com.pizzahouse.common.model.Confirmation;
 import com.pizzahouse.common.model.ErrorDetail;
 import com.pizzahouse.common.model.Response;
+import com.pizzahouse.order.config.Connection;
 import com.pizzahouse.order.controller.ConfirmationService;
 import com.pizzahouse.order.security.JwtService;;
 
@@ -39,6 +43,8 @@ public class Router extends SpringBootServletInitializer {
 	protected ConfirmationService confirmationService;
 	@Autowired
 	protected JwtService<Confirmation> jwtService;
+	@Autowired
+	protected Connection connection;
 	
 	/**
 	 * Confirmation endpoint - Receive PizzaService request, communication through secure channel
@@ -120,14 +126,44 @@ public class Router extends SpringBootServletInitializer {
 		try {
 			jsonResponse = mapper.writeValueAsString(response);
 		} catch (JsonProcessingException e) {
+			error.setErrorCode(ErrorCode.jsonProcessingException);
+			error.setErrorMessage("[JsonProcessingException] Json Processing Exception occured : " + e.getMessage());
+			
+			response.setSuccess(false);
+			response.setError(error);
+			logger.error("[JsonProcessingException] Json Processing Exception occured : " + e.getMessage());
+			e.printStackTrace();
+		} catch(Exception e) {
+			error.setErrorCode(ErrorCode.baseException);
+			error.setErrorMessage("Unknown error occured, please try again later");
+			
+			response.setSuccess(false);
+			response.setError(error);
+			logger.error("[Exception] Unknown error occured : " + e.getMessage());
 			e.printStackTrace();
 		}
-		String jwtResponseMessage = jwtService.createJwt(String.valueOf(confirmation.getUserId()), Connection.serverIssuerName, jsonResponse, Connection.jwtTtlMilliseconds, Connection.serverJwtSecretKey);
+		
+		String jwtResponseMessage = jwtService.createJwt(String.valueOf(confirmation.getUserUuid()), connection.getServerIssuerName(), jsonResponse, connection.getJwtTtlMilliseconds(), connection.getServerJwtSecretKey());
 		logger.info("Finish calling OrderConfirmation /confirm endpoint : ");
 
 		return jwtResponseMessage;
 	}
 
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	@ExceptionHandler({ Exception.class })
+	public Response<String> pathNotFound (RuntimeException ex, WebRequest request) {
+
+		Response<String> response = new Response<String>();
+		ErrorDetail error = new ErrorDetail();
+		error.setErrorCode(ErrorCode.baseException);
+		error.setErrorMessage("Path not found");
+		
+		response.setSuccess(false);
+		response.setError(error);
+		
+		return response;
+	}
+	
     public static void main(String[] args) {
     	System.out.println("WebConfiguration run init");
     }

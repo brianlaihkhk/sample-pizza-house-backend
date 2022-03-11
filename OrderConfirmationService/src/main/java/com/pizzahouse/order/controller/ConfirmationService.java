@@ -1,6 +1,7 @@
 package com.pizzahouse.order.controller;
 
 import java.sql.Date;
+import java.util.UUID;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class ConfirmationService {
 		long epoch = (System.currentTimeMillis() / 1000);
 
 		try {
-			purchase.setUserId(confirmation.getUserId());
+			purchase.setUserUuid(confirmation.getUserUuid());
 			purchase.setTotalAmount(confirmation.getTotalAmount());
 			purchase.setCreationEpochTime(epoch);
 			purchase.setCreationTime(new Date(epoch * 1000));
@@ -58,7 +59,7 @@ public class ConfirmationService {
 	 * @param confirmation Confirmation object that sent from PizzaService
 	 * @return List of PurchaseDetail object that persist to DB
 	 */
-	public List<PurchaseDetail> processConfirmationDetail(int purchaseId, Confirmation confirmation) throws OrderFullfillmentException{
+	public List<PurchaseDetail> processConfirmationDetail(String purchaseUuid, Confirmation confirmation) throws OrderFullfillmentException{
 		List<PurchaseDetail> details = new ArrayList<PurchaseDetail>();
 
 		try {
@@ -66,12 +67,12 @@ public class ConfirmationService {
 			for (ConfirmationDetail confirmationDetail : confirmation.getDetails()) {
 				PurchaseDetail purchaseDetail = new PurchaseDetail();
 				
-				purchaseDetail.setPurchaseId(purchaseId);
-				purchaseDetail.setPizzaTypeId(confirmationDetail.getPizzaTypeId());
+				purchaseDetail.setPurchaseUuid(purchaseUuid);
+				purchaseDetail.setPizzaTypeUuid(confirmationDetail.getPizzaTypeUuid());
 				purchaseDetail.setQuantity(confirmationDetail.getQuantity());
 				purchaseDetail.setSinglePrice(confirmationDetail.getSinglePrice());
 				purchaseDetail.setSubItemCategoryId(confirmationDetail.getSubItemCategoryId());
-				purchaseDetail.setSubItemReferenceId(confirmationDetail.getSubItemReferenceId());
+				purchaseDetail.setSubItemReferenceUuid(confirmationDetail.getSubItemReferenceUuid());
 				purchaseDetail.setSubTotal(confirmationDetail.getSubTotal());
 				
 				details.add(purchaseDetail);
@@ -92,81 +93,25 @@ public class ConfirmationService {
 	 */
 	public Response<String> confirmOrder(Confirmation confirmation) throws OrderFullfillmentException{
 		Response<String> response = new Response<String>();
-		try {
-			System.out.println(mapper.writeValueAsString(confirmation));
-			Purchase purchase = processConfirmation(confirmation);
-			System.out.println(mapper.writeValueAsString(purchase));
-			int recordId = purchaseQuery.insert(purchase);	
-			
-			logger.info ("Record id : " + String.valueOf(recordId));
-			
-			if (recordId > 0) {
-				purchaseDetailQuery.insertList(processConfirmationDetail(recordId, confirmation));
-			} else {
-				throw new OrderFullfillmentException("Unable to insert into DB, transaction rolled back");
-			}
-			response.setSuccess(true);
-			response.setPayload("Order cofirmed : " + recordId);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		Purchase purchase = processConfirmation(confirmation);
+		String purchaseUuid = UUID.randomUUID().toString();
+		purchase.setId(purchaseUuid);
+		String recordId = (String) purchaseQuery.insert(purchase);	
+		
+		logger.info ("Record id : " + String.valueOf(recordId));
+		
+		if (recordId != null && !recordId.isEmpty()) {
+			purchaseDetailQuery.insertList(processConfirmationDetail(purchaseUuid, confirmation));
+		} else {
+			throw new OrderFullfillmentException("Unable to insert into DB, transaction rolled back");
 		}
+		response.setSuccess(true);
+		response.setPayload("Order cofirmed : " + recordId);
+
 
 		
 		return response;
 	}
-//	/**
-//	 * Process and validate confirmation object and convert to Purchase for DB persistance 
-//	 * @param confirmation Confirmation object that sent from PizzaService
-//	 * @return Confirm the order is received and persist in DB, otherwise throw Exception
-//	 */
-//	public Purchase processConfirmation(Confirmation confirmation) throws OrderFullfillmentException{
-//		Purchase purchase = new Purchase();
-//		List<PurchaseDetail> details = new ArrayList<PurchaseDetail>();
-//		long epoch = (System.currentTimeMillis() / 1000);
-//
-//		try {
-//			purchase.setUserId(confirmation.getUserId());
-//			purchase.setTotalAmount(confirmation.getTotalAmount());
-//			purchase.setCreationEpochTime(epoch);
-//			purchase.setCreationTime(new Date(epoch * 1000));
-//			
-//			for (ConfirmationDetail confirmationDetail : confirmation.getDetails()) {
-//				PurchaseDetail purchaseDetail = new PurchaseDetail();
-//				
-//				purchaseDetail.setPizzaTypeId(confirmationDetail.getPizzaTypeId());
-//				purchaseDetail.setQuantity(confirmationDetail.getQuantity());
-//				purchaseDetail.setSinglePrice(confirmationDetail.getSinglePrice());
-//				purchaseDetail.setSubItemCategoryId(confirmationDetail.getSubItemCategoryId());
-//				purchaseDetail.setSubItemReferenceId(confirmationDetail.getSubItemReferenceId());
-//				purchaseDetail.setSubTotal(confirmationDetail.getSubTotal());
-//				
-//				details.add(purchaseDetail);
-//			}
-//			
-//			purchase.setDetails(details);
-//		} catch (Exception e) {
-//			throw new OrderFullfillmentException("Unable to confirm order, please request support for assistance and try again later");
-//		}
-//		
-//		return purchase;
-//	}
-	
-//	/**
-//	 * Process and validate confirmation object and convert to Purchase for DB persistance 
-//	 * @param confirmation Confirmation object that sent from PizzaService
-//	 * @return Purchase object that persist to DB
-//	 */
-//	public Response<String> confirmOrder(Confirmation confirmation) throws OrderFullfillmentException{
-//		Response<String> response = new Response<String>();
-//		
-//		Purchase purchase = processConfirmation(confirmation);
-//		int recordId = purchaseQuery.insert(purchase);	
-//		
-//		response.setSuccess(true);
-//		response.setPayload("Order cofirmed : " + recordId);
-//		
-//		return response;
-//	}
+
 
 }

@@ -27,15 +27,15 @@ public class Pizza {
 	CompositePizzaKey key;
 	
 	@OneToOne
-    @JoinColumn(name = "PIZZA_TYPE_ID", insertable=false, updatable=false)
+    @JoinColumn(name = "PIZZA_TYPE_UUID", insertable=false, updatable=false)
 	private PizzaType pizzaType;
     
 	@OneToOne
-    @JoinColumn(name = "PIZZA_SIZE_ID", insertable=false, updatable=false)
+    @JoinColumn(name = "PIZZA_SIZE_UUID", insertable=false, updatable=false)
 	private PizzaSize pizzaSize;
     
 	@OneToOne
-    @JoinColumn(name = "PIZZA_TOPPING_ID", insertable=false, updatable=false)
+    @JoinColumn(name = "PIZZA_TOPPING_UUID", insertable=false, updatable=false)
 	private PizzaTopping pizzaTopping;
 
 
