@@ -16,3 +16,7 @@ Coding assessment - Pizza House - Submitted by Brian Lai (brianlaihkhk@gmail.com
 - OrderConfirmationService : Java module in saving confirmed orders
 - Common : Java module for common library
 - Deploy : Deployment script for maven and docker
+
+### Contact
+- Linkedin : https://www.linkedin.com/in/brianlaihk/
+- brianlaihkhk@gmail.com
