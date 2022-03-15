@@ -3,7 +3,7 @@ Coding assessment - Pizza House - Submitted by Brian Lai (brianlaihkhk@gmail.com
 
 ### Features
 
-- Framework used : Hibernate orm, JPA Persistance framework, Spring-boot, Spring MVC, Spring Exception handler, slf4j, jax-rs, jjwt, jasypt (Hibernate & Spring-boot)
+- Framework used : Hibernate orm, JPA Persistance framework + Criteria API, Spring-boot, Spring MVC, Spring Exception handler, slf4j, jax-rs, jjwt, jasypt (Hibernate & Spring-boot)
 - JWT encrypt between services, pass by header
 - Session token and user uuid pass by header for session authenication
 - UUID for distributed system
@@ -33,5 +33,5 @@ Coding assessment - Pizza House - Submitted by Brian Lai (brianlaihkhk@gmail.com
 - 48 hours
 
 ### Contact
-- Linkedin : https://www.linkedin.com/in/brianlaihk/
+- Linkedin : https://www.linkedin.com/in/brianlaihkhk/
 - brianlaihkhk@gmail.com
