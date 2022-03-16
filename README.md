@@ -1,5 +1,5 @@
 # Coding assessment
-Coding assessment - Pizza House - Submitted by Brian Lai (brianlaihkhk@gmail.com)
+Coding assessment - Pizza House - Submitted by Brian Lai
 
 ### Features
 
@@ -18,7 +18,7 @@ Coding assessment - Pizza House - Submitted by Brian Lai (brianlaihkhk@gmail.com
 - Common : Java module for common library
 - Deploy : Deployment script for maven and docker
 
-### Requirement
+### Technical Assessment Requirement
 
 - Java is required as coding language
 - A service should be created to generate a pizza order message with name, quantity and price (the values used do not matter) and send that message to the second service.
@@ -34,4 +34,4 @@ Coding assessment - Pizza House - Submitted by Brian Lai (brianlaihkhk@gmail.com
 
 ### Contact
 - Linkedin : https://www.linkedin.com/in/brianlaihkhk/
-- brianlaihkhk@gmail.com
+- Github : https://github.com/brianlaihkhk/
