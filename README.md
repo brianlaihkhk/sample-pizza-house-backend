@@ -33,5 +33,5 @@ Coding assessment - Pizza House - Submitted by Brian Lai
 - 48 hours
 
 ### Contact
-- Linkedin : https://www.linkedin.com/in/brianlaihkhk/
+- Linkedin : https://linkedin.com/in/brianlaihkhk/
 - Github : https://github.com/brianlaihkhk/
