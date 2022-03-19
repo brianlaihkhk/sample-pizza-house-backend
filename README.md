@@ -28,6 +28,26 @@ Coding assessment - Pizza House - Submitted by Brian Lai
 - Calls between services should use REST.
 - Logging / documentation and testing are expected as part of the solution.
 
+
+### Prerequsite
+
+- For more details please refer to Documentation folder
+
+- [AWS solution]
+   - AWS IAM (Permission setup)
+   - AWS VPC (Network connection capability)
+   - AWS RDS MySQL (or equivalent)
+   - AWS ECS / EKS (For container orchestration)
+   - AWS-cli or AWS CloudFormation
+   - Maven 
+
+- [non-AWS solution]
+   - Tomcat (or equivalent)
+   - MySQL (or other SQL database for OLAP)
+   - Maven
+   - (Optional) Docker
+   - (Optional) Docker swarm, Kubernetes or equivalent (For container orchestration) 
+
 ### Time limit
 
 - 48 hours
