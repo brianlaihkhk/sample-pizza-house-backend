@@ -42,8 +42,8 @@ Coding assessment - Pizza House - Submitted by Brian Lai
    - Maven 
 
 - [non-AWS solution]
-   - Tomcat (or equivalent)
-   - MySQL (or other SQL database for OLAP)
+   - Tomcat / Weblogic (non-container deployment)
+   - MySQL (or other SQL database)
    - Maven
    - (Optional) Docker
    - (Optional) Docker swarm, Kubernetes or equivalent (For container orchestration) 
