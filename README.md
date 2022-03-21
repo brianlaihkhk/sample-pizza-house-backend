@@ -1,5 +1,5 @@
-# Coding assessment
-Coding assessment - Pizza House - Submitted by Brian Lai
+# Coding sample
+Coding sample - Pizza House - Submitted by Brian Lai
 
 ### Features
 
